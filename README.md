@@ -1,4 +1,4 @@
-![Logo of the project](https://github.com/edu-doc/BibliotecaMunicipal/blob/main/logo.jpg)
+![Logo of the project](https://github.com/edu-doc/biblioteca_municipal_api/blob/main/logo.jpg)
 
 # Biblioteca Municipal
 
