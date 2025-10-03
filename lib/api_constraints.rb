@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
 class ApiConstraints
+  attr_accessor :version, :default
 
-    attr_accessor :version, :default
+  def initialize(options)
+    @version = options[:version]
+    @default = options[:default]
+  end
 
-    def initialize(options)
-        @version = options[:version]
-        @default = options[:default]
-    end
-
-    def matches?(request)
-        @default || request.headers['Accept'].include?("application/vnd.biblioteca_municipal_api.v#{@version}")
-    end
+  def matches?(request)
+    @default || request.headers['Accept'].include?("application/vnd.biblioteca_municipal_api.v#{@version}")
+  end
 end
