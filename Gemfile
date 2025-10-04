@@ -56,9 +56,10 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 6.5', '>= 6.5.1'
 
   gem 'pry-rails', '~> 0.3.11'
+
+  gem 'shoulda-matchers', '~> 6.5'
 end
 
 group :test do
-  gem 'shoulda-matchers', '~> 6.5'
   gem 'simplecov', require: false
 end
