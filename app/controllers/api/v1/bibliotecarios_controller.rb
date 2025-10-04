@@ -6,7 +6,8 @@ module Api
       respond_to :json
 
       def show
-        respond_with Bibliotecario.find(params[:id])
+        @bibliotecario = Bibliotecario.find(params[:id])
+        render json: @bibliotecario, only: [:nome, :email]
       end
 
       def create
@@ -21,7 +22,7 @@ module Api
       private
 
       def bibliotecario_params
-        params.require(:bibliotecario).permit(:email, :password, :password_confirmation, :nome)
+        params.require(:bibliotecario).permit(:email, :password, :password_confirmation, :nome, :senha_provisoria)
       end
     end
   end

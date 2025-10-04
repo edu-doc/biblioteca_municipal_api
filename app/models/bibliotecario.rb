@@ -8,4 +8,6 @@ class Bibliotecario < ApplicationRecord
 
   validates :email, presence: true
   validates :email, uniqueness: true
+  validates :nome, presence: true
+  validates :senha_provisoria, presence: true, on: :create
 end

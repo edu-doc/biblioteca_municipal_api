@@ -352,7 +352,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  base64
   bootsnap
   debug
   devise (~> 4.9, >= 4.9.4)
