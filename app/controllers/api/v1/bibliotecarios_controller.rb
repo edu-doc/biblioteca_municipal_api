@@ -8,6 +8,21 @@ module Api
       def show
         respond_with Bibliotecario.find(params[:id])
       end
+
+      def create
+        bibliotecario = Bibliotecario.new(bibliotecario_params)
+        if bibliotecario.save
+          render json: bibliotecario, status: 201, location: [:api, :v1, bibliotecario]
+        else
+          render json: { errors: bibliotecario.errors }, status: 422
+        end
+      end
+
+      private
+
+      def bibliotecario_params
+        params.require(:bibliotecario).permit(:email, :password, :password_confirmation, :nome)
+      end
     end
   end
 end

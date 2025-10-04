@@ -7,8 +7,4 @@ class ApiConstraints
     @version = options[:version]
     @default = options[:default]
   end
-
-  def matches?(request)
-    @default || request.headers['Accept'].include?("application/vnd.biblioteca_municipal_api.v#{@version}")
-  end
 end
