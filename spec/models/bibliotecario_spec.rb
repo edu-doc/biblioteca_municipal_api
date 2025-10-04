@@ -22,5 +22,4 @@ RSpec.describe Bibliotecario, type: :model do
     it { should validate_presence_of(:email) }
     it { should allow_value('email@domain.com').for(:email) }
   end
-
 end
