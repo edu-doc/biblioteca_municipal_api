@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 20_251_003_202_321) do
+ActiveRecord::Schema[8.0].define(version: 20_251_005_120_803) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'pg_catalog.plpgsql'
 
@@ -27,7 +27,9 @@ ActiveRecord::Schema[8.0].define(version: 20_251_003_202_321) do
     t.string 'nome', null: false
     t.string 'senha_provisoria', null: false
     t.boolean 'primeiro_acesso', default: true, null: false
+    t.string 'token', default: 'xxxxxxxx', null: false
     t.index ['email'], name: 'index_bibliotecarios_on_email', unique: true
     t.index ['reset_password_token'], name: 'index_bibliotecarios_on_reset_password_token', unique: true
+    t.index ['token'], name: 'index_bibliotecarios_on_token', unique: true
   end
 end
