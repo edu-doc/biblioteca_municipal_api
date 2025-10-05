@@ -7,7 +7,7 @@ module Api
 
       def show
         bibliotecario = Bibliotecario.find(params[:id])
-        render json: bibliotecario, only: %i[nome email senha_provisoria]
+        render json: bibliotecario, only: %i[id nome email senha_provisoria created_at updated_at]
       end
 
       def create

@@ -1,0 +1,122 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/bibliotecarios":
+    post:
+      summary: Create bibliotecario
+      tags:
+      - Api::V1::Bibliotecarios
+      parameters: []
+      responses:
+        '201':
+          description: bibliotecario created
+        '422':
+          description: create user error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bibliotecario:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    password:
+                      type: string
+                    nome:
+                      type: string
+  "/api/v1/bibliotecarios/{id}":
+    get:
+      summary: Get bibliotecario
+      tags:
+      - Api::V1::Bibliotecarios
+      parameters:
+      - name: id
+        in: path
+        description: id for bibliotecario
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: bibliotecario found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nome:
+                    type: string
+                  email:
+                    type: string
+                  senha_provisoria:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+        '404':
+          description: bibliotecario not found
+    delete:
+      summary: Delete bibliotecario
+      tags:
+      - Api::V1::Bibliotecarios
+      parameters:
+      - name: id
+        in: path
+        description: id for bibliotecario
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: bibliotecario deleted
+        '404':
+          description: bibliotecario not found
+    put:
+      summary: Update bibliotecario
+      tags:
+      - Api::V1::Bibliotecarios
+      parameters:
+      - name: id
+        in: path
+        description: id for bibliotecario
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: bibliotecario updated
+        '404':
+          description: bibliotecario not found
+        '422':
+          description: update bibliotecario error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bibliotecario:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    password:
+                      type: string
+                    nome:
+                      type: string
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: 127.0.0.1:3000
