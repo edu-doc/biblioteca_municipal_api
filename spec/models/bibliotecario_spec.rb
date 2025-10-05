@@ -24,7 +24,7 @@ RSpec.describe Bibliotecario, type: :model do
     it { should validate_confirmation_of(:password) }
     it { should validate_presence_of(:email) }
     it { should allow_value('email@domain.com').for(:email) }
-    it { should validate_uniqueness_of(:token)}
+    it { should validate_uniqueness_of(:token) }
   end
 
   describe '#gerar_senha_provisoria' do
@@ -48,5 +48,4 @@ RSpec.describe Bibliotecario, type: :model do
       expect(bibliotecario.token).not_to eql existing_bibliotecario.token
     end
   end
-
 end

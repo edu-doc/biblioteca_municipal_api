@@ -17,9 +17,9 @@ class Bibliotecario < ApplicationRecord
   end
 
   def gerador_token_autenticacao
-    begin
+    loop do
       self.token = Devise.friendly_token
-    end while self.class.exists?(token: token)
+      break unless self.class.exists?(token: token)
+    end
   end
-
 end
