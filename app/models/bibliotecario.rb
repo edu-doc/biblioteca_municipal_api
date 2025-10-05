@@ -8,4 +8,12 @@ class Bibliotecario < ApplicationRecord
 
   validates :email, presence: true
   validates :email, uniqueness: true
+
+  before_create :gerar_senha_provisoria
+
+  private
+
+  def gerar_senha_provisoria
+    self.senha_provisoria = SecureRandom.hex(8)
+  end
 end
