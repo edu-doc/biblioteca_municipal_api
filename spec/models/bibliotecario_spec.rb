@@ -27,14 +27,6 @@ RSpec.describe Bibliotecario, type: :model do
     it { should validate_uniqueness_of(:token) }
   end
 
-  describe '#gerar_senha_provisoria' do
-    it 'generates a password' do
-      expect(bibliotecario.senha_provisoria).to be_nil
-      bibliotecario.save
-      expect(bibliotecario.senha_provisoria).not_to be_nil
-    end
-  end
-
   describe '#gerador_token_autenticacao' do
     it 'generates a unique token' do
       allow(Devise).to receive(:friendly_token).and_return('auniquetoken123')

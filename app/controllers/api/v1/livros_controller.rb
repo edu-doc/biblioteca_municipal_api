@@ -5,12 +5,12 @@ module Api
     class LivrosController < ApplicationController
       def index
         livros = Livro.all
-        render json: livros, only: %i[titulo autor status observacoes categoria_id], status: 200
+        render json: livros, only: %i[titulo autor status observacoes categoria_id created_at updated_at], status: 200
       end
 
       def show
         livro = Livro.find(params[:id])
-        render json: livro, only: %i[titulo autor status observacoes categoria_id], status: 200
+        render json: livro, only: %i[titulo autor status observacoes categoria_id created_at updated_at], status: 200
       end
 
       def create

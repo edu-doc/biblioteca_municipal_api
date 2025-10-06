@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
 class Bibliotecario < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  validates :email, presence: true
-  validates :email, uniqueness: true
+  validates :email, presence: true, uniqueness: true
   validates :token, uniqueness: true
 
-  before_create :gerar_senha_provisoria
+  validates :senha_provisoria, presence: true, on: :create
 
-  def gerar_senha_provisoria
-    self.senha_provisoria = SecureRandom.hex(8)
+  before_validation :definir_senha_inicial_do_devise, on: :create
+
+  def definir_senha_inicial_do_devise
+    return unless password.blank? && senha_provisoria.present?
+
+    self.password = senha_provisoria
   end
 
   def gerador_token_autenticacao

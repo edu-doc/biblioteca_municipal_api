@@ -4,18 +4,22 @@ module Api
   module V1
     class SessionsController < ApplicationController
       def create
-        bibliotecario_passoword = params[:session][:password]
+        bibliotecario_password = params[:session][:password]
         bibliotecario_email = params[:session][:email]
-
         bibliotecario = bibliotecario_email.present? && Bibliotecario.find_by(email: bibliotecario_email)
 
-        if bibliotecario.valid_password?(bibliotecario_passoword)
-          sign_in bibliotecario, store: false
-          bibliotecario.gerador_token_autenticacao
-          bibliotecario.save
-          render json: { token: bibliotecario.token }, status: 200
+        return render json: { errors: 'E-mail ou senha inválidos' }, status: :unauthorized unless bibliotecario
+
+        if bibliotecario.primeiro_acesso?
+          if ActiveSupport::SecurityUtils.secure_compare(bibliotecario.senha_provisoria, bibliotecario_password)
+            sign_in_and_generate_token(bibliotecario)
+          else
+            render json: { errors: 'E-mail ou senha provisória inválidos' }, status: :unauthorized
+          end
+        elsif bibliotecario.valid_password?(bibliotecario_password)
+          sign_in_and_generate_token(bibliotecario)
         else
-          render json: { errors: 'Invalid email or password' }, status: 401
+          render json: { errors: 'E-mail ou senha inválidos' }, status: :unauthorized
         end
       end
 
@@ -24,10 +28,23 @@ module Api
         if bibliotecario
           bibliotecario.gerador_token_autenticacao
           bibliotecario.save
-          head 204
+          head :no_content
         else
-          render json: { errors: 'Token inválido ou não encontrado' }, status: 404
+          render json: { errors: 'Token inválido ou não encontrado' }, status: :not_found
         end
+      end
+
+      private
+
+      def sign_in_and_generate_token(bibliotecario)
+        sign_in bibliotecario, store: false
+        bibliotecario.gerador_token_autenticacao
+        bibliotecario.save
+
+        render json: {
+          token: bibliotecario.token,
+          primeiro_acesso: bibliotecario.primeiro_acesso?
+        }, status: :ok
       end
     end
   end

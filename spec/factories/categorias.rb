@@ -2,6 +2,6 @@
 
 FactoryBot.define do
   factory :categoria do
-    nome { FFaker::Book.genre }
+    sequence(:nome) { |n| "#{FFaker::Book.genre} #{n}" }
   end
 end

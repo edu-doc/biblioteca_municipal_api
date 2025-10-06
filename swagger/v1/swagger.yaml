@@ -14,7 +14,7 @@ paths:
         '201':
           description: bibliotecario created
         '422':
-          description: create user error
+          description: create bibliotecario error
       requestBody:
         content:
           application/json:
@@ -26,7 +26,7 @@ paths:
                   properties:
                     email:
                       type: string
-                    password:
+                    senha_provisoria:
                       type: string
                     nome:
                       type: string
@@ -114,6 +114,457 @@ paths:
                     password:
                       type: string
                     nome:
+                      type: string
+  "/api/v1/categorias":
+    post:
+      summary: Create categoria
+      tags:
+      - Api::V1::Categorias
+      parameters: []
+      responses:
+        '201':
+          description: categoria created
+        '422':
+          description: create categoria error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoria:
+                  type: object
+                  properties:
+                    nome:
+                      type: string
+    get:
+      summary: Get categorias
+      tags:
+      - Api::V1::Categorias
+      responses:
+        '200':
+          description: categorias found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    nome:
+                      type: string
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+  "/api/v1/categorias/{id}":
+    get:
+      summary: Get categoria
+      tags:
+      - Api::V1::Categorias
+      parameters:
+      - name: id
+        in: path
+        description: id for categoria
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: categoria found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nome:
+                    type: string
+        '404':
+          description: categoria not found
+    delete:
+      summary: Delete categoria
+      tags:
+      - Api::V1::Categorias
+      parameters:
+      - name: id
+        in: path
+        description: id for categoria
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: categoria deleted
+        '404':
+          description: categoria not found
+    put:
+      summary: Update categoria
+      tags:
+      - Api::V1::Categorias
+      parameters:
+      - name: id
+        in: path
+        description: id for categoria
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: categoria updated
+        '404':
+          description: categoria not found
+        '422':
+          description: update categoria error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoria:
+                  type: object
+                  properties:
+                    nome:
+                      type: string
+  "/api/v1/livros":
+    post:
+      summary: Create livro
+      tags:
+      - Api::V1::Livros
+      parameters: []
+      responses:
+        '201':
+          description: livro created
+        '422':
+          description: create livro error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                livro:
+                  type: object
+                  properties:
+                    titulo:
+                      type: string
+                    autor:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                      - disponivel
+                      - emprestado
+                    observacoes:
+                      type: string
+                    categoria_id:
+                      type: integer
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+    get:
+      summary: Get livros
+      tags:
+      - Api::V1::Livros
+      responses:
+        '200':
+          description: livros found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    titulo:
+                      type: string
+                    autor:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                      - disponivel
+                      - emprestado
+                    observacoes:
+                      type: string
+                    categoria_id:
+                      type: integer
+  "/api/v1/livros/{id}":
+    get:
+      summary: Get livro
+      tags:
+      - Api::V1::Livros
+      parameters:
+      - name: id
+        in: path
+        description: id for livro
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: livro found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  titulo:
+                    type: string
+                  autor:
+                    type: string
+                  status:
+                    type: string
+                    enum:
+                    - disponivel
+                    - emprestado
+                  observacoes:
+                    type: string
+                  categoria_id:
+                    type: integer
+        '404':
+          description: livro not found
+    delete:
+      summary: Delete livro
+      tags:
+      - Api::V1::Livros
+      parameters:
+      - name: id
+        in: path
+        description: id for livro
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: livro deleted
+        '404':
+          description: livro not found
+    put:
+      summary: Update livro
+      tags:
+      - Api::V1::Livros
+      parameters:
+      - name: id
+        in: path
+        description: id for livro
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: livro updated
+        '404':
+          description: livro not found
+        '422':
+          description: update livro error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                livro:
+                  type: object
+                  properties:
+                    titulo:
+                      type: string
+                    autor:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                      - disponivel
+                      - emprestado
+                    observacoes:
+                      type: string
+                    categoria_id:
+                      type: integer
+  "/api/v1/sessions":
+    post:
+      summary: Login
+      tags:
+      - Api::V1::Sessions
+      parameters: []
+      responses:
+        '200':
+          description: Successful Login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  primeiro_acesso:
+                    type: boolean
+        '401':
+          description: Invalid credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    password:
+                      type: string
+                  required:
+                  - email
+                  - password
+    delete:
+      summary: Logout
+      tags:
+      - Api::V1::Sessions
+      parameters: []
+      responses:
+        '204':
+          description: Successful Logout
+        '404':
+          description: Token not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required:
+              - token
+  "/api/v1/usuarios":
+    post:
+      summary: Create usuario
+      tags:
+      - Api::V1::Usuarios
+      parameters: []
+      responses:
+        '201':
+          description: usuario created
+        '422':
+          description: create usuario error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usuario:
+                  type: object
+                  properties:
+                    nome:
+                      type: string
+                    cpf:
+                      type: string
+                    telefone:
+                      type: string
+                    email:
+                      type: string
+  "/api/v1/usuarios/{id}":
+    get:
+      summary: Get usuario
+      tags:
+      - Api::V1::Usuarios
+      parameters:
+      - name: id
+        in: path
+        description: id for usuario
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: usuario found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nome:
+                    type: string
+                  cpf:
+                    type: string
+                  telefone:
+                    type: string
+                  email:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+        '404':
+          description: usuario not found
+    delete:
+      summary: Delete usuario
+      tags:
+      - Api::V1::Usuarios
+      parameters:
+      - name: id
+        in: path
+        description: id for usuario
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: usuario deleted
+        '404':
+          description: usuario not found
+    put:
+      summary: Update usuario
+      tags:
+      - Api::V1::Usuarios
+      parameters:
+      - name: id
+        in: path
+        description: id for usuario
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: usuario updated
+        '404':
+          description: usuario not found
+        '422':
+          description: update usuario error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usuario:
+                  type: object
+                  properties:
+                    nome:
+                      type: string
+                    cpf:
+                      type: string
+                    telefone:
+                      type: string
+                    email:
                       type: string
 servers:
 - url: http://{defaultHost}

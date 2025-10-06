@@ -21,10 +21,18 @@ module Api
 
       def update
         bibliotecario = Bibliotecario.find(params[:id])
-        if bibliotecario.update(bibliotecario_params)
-          render json: bibliotecario, status: 200, location: [:api, :v1, bibliotecario]
+
+        params_to_use = bibliotecario.primeiro_acesso? ? first_login_params : bibliotecario_params
+
+        if bibliotecario.primeiro_acesso? && params_to_use[:password].present?
+          params_to_use[:primeiro_acesso] = false
+          params_to_use[:senha_provisoria] = nil
+        end
+
+        if bibliotecario.update(params_to_use)
+          render json: bibliotecario, status: :ok, location: [:api, :v1, bibliotecario]
         else
-          render json: { errors: bibliotecario.errors }, status: 422
+          render json: { errors: bibliotecario.errors }, status: :unprocessable_entity
         end
       end
 
@@ -37,7 +45,11 @@ module Api
       private
 
       def bibliotecario_params
-        params.require(:bibliotecario).permit(:email, :password, :nome)
+        params.require(:bibliotecario).permit(:email, :nome, :senha_provisoria)
+      end
+
+      def first_login_params
+        params.require(:bibliotecario).permit(:password)
       end
     end
   end
