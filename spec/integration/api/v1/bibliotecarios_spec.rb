@@ -16,7 +16,7 @@ RSpec.describe 'api/v1/bibliotecarios', type: :request do
             type: :object,
             properties: {
               email: { type: :string },
-              password: { type: :string },
+              senha_provisoria: { type: :string },
               nome: { type: :string }
             }
           }
@@ -125,7 +125,6 @@ RSpec.describe 'api/v1/bibliotecarios', type: :request do
         let(:bibliotecario) { { bibliotecario: { email: 'invalidgmail.com', password: '123', nome: 'Errito' } } }
         run_test!
       end
-      
     end
   end
 end

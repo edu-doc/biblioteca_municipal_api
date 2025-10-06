@@ -33,7 +33,7 @@ RSpec.describe Api::V1::BibliotecariosController, type: :controller do
 
     context 'when is not created' do
       before(:each) do
-        @invalid_bibliotecario_atributos = { password: '12345678' }
+        @invalid_bibliotecario_atributos = { senha_provisoria: '12345678' }
         post :create, params: { bibliotecario: @invalid_bibliotecario_atributos }, format: :json
       end
 
@@ -52,7 +52,7 @@ RSpec.describe Api::V1::BibliotecariosController, type: :controller do
   describe 'PUT/PATCH #update' do
     context 'when is sucessfully updated' do
       before(:each) do
-        @bibliotecario = FactoryBot.create :bibliotecario
+        @bibliotecario = FactoryBot.create :bibliotecario, primeiro_acesso: false
         put :update, params: { id: @bibliotecario.id, bibliotecario: { email: 'new_email@example.com' } }, format: :json
       end
 
@@ -66,7 +66,7 @@ RSpec.describe Api::V1::BibliotecariosController, type: :controller do
 
     context 'when is not updated' do
       before(:each) do
-        @bibliotecario = FactoryBot.create :bibliotecario
+        @bibliotecario = FactoryBot.create :bibliotecario, primeiro_acesso: false
         put :update, params: { id: @bibliotecario.id, bibliotecario: { email: 'emailerrado.com' } }, format: :json
       end
 

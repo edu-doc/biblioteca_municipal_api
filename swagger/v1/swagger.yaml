@@ -26,7 +26,7 @@ paths:
                   properties:
                     email:
                       type: string
-                    password:
+                    senha_provisoria:
                       type: string
                     nome:
                       type: string
@@ -155,6 +155,12 @@ paths:
                       type: integer
                     nome:
                       type: string
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
   "/api/v1/categorias/{id}":
     get:
       summary: Get categoria
@@ -259,6 +265,12 @@ paths:
                       type: string
                     categoria_id:
                       type: integer
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
     get:
       summary: Get livros
       tags:
@@ -381,6 +393,123 @@ paths:
                       type: string
                     categoria_id:
                       type: integer
+  "/api/v1/usuarios":
+    post:
+      summary: Create usuario
+      tags:
+      - Api::V1::Usuarios
+      parameters: []
+      responses:
+        '201':
+          description: usuario created
+        '422':
+          description: create usuario error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usuario:
+                  type: object
+                  properties:
+                    nome:
+                      type: string
+                    cpf:
+                      type: string
+                    telefone:
+                      type: string
+                    email:
+                      type: string
+  "/api/v1/usuarios/{id}":
+    get:
+      summary: Get usuario
+      tags:
+      - Api::V1::Usuarios
+      parameters:
+      - name: id
+        in: path
+        description: id for usuario
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: usuario found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nome:
+                    type: string
+                  cpf:
+                    type: string
+                  telefone:
+                    type: string
+                  email:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+        '404':
+          description: usuario not found
+    delete:
+      summary: Delete usuario
+      tags:
+      - Api::V1::Usuarios
+      parameters:
+      - name: id
+        in: path
+        description: id for usuario
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: usuario deleted
+        '404':
+          description: usuario not found
+    put:
+      summary: Update usuario
+      tags:
+      - Api::V1::Usuarios
+      parameters:
+      - name: id
+        in: path
+        description: id for usuario
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: usuario updated
+        '404':
+          description: usuario not found
+        '422':
+          description: update usuario error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usuario:
+                  type: object
+                  properties:
+                    nome:
+                      type: string
+                    cpf:
+                      type: string
+                    telefone:
+                      type: string
+                    email:
+                      type: string
 servers:
 - url: http://{defaultHost}
   variables:

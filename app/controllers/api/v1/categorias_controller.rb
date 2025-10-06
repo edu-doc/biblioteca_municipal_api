@@ -5,12 +5,12 @@ module Api
     class CategoriasController < ApplicationController
       def index
         categorias = Categoria.all
-        render json: categorias, only: %i[nome], status: 200
+        render json: categorias, only: %i[id nome created_at updated_at], status: 200
       end
 
       def show
         categoria = Categoria.find(params[:id])
-        render json: categoria, only: %i[nome], status: 200
+        render json: categoria, only: %i[nome created_at updated_at], status: 200
       end
 
       def create

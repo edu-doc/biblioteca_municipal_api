@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Api::V1::SessionsController, type: :controller do
   describe 'POST #create' do
     before(:each) do
-      @bibliotecario = FactoryBot.create(:bibliotecario)
+      @bibliotecario = FactoryBot.create(:bibliotecario, primeiro_acesso: false)
     end
 
     context 'when the credentials are correct' do
@@ -29,9 +29,17 @@ RSpec.describe Api::V1::SessionsController, type: :controller do
         post :create, params: { session: credentials }
       end
 
+      it 'returns an error first acess' do
+        @bibliotecario.update(primeiro_acesso: true)
+        credentials = { email: @bibliotecario.email, password: '@' }
+        post :create, params: { session: credentials }
+        json_response = JSON.parse(response.body, symbolize_names: true)
+        expect(json_response[:errors]).to eql 'E-mail ou senha provisória inválidos'
+      end
+
       it 'returns an error' do
         json_response = JSON.parse(response.body, symbolize_names: true)
-        expect(json_response[:errors]).to eql 'Invalid email or password'
+        expect(json_response[:errors]).to eql 'E-mail ou senha inválidos'
       end
 
       it { should respond_with 401 }
