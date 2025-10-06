@@ -7,7 +7,7 @@ module Api
 
       def show
         bibliotecario = Bibliotecario.find(params[:id])
-        render json: bibliotecario, only: %i[id nome email senha_provisoria created_at updated_at]
+        render json: bibliotecario, only: %i[id nome email senha_provisoria created_at updated_at], status: 200
       end
 
       def create
@@ -39,6 +39,7 @@ module Api
       def bibliotecario_params
         params.require(:bibliotecario).permit(:email, :password, :nome)
       end
+
     end
   end
 end

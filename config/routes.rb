@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :bibliotecarios, only: %i[show create update destroy]
       resource :sessions, only: %i[create destroy]
+      resources :categorias, only: %i[index show create update destroy]
     end
   end
 end
