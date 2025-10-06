@@ -18,6 +18,7 @@ class Usuario < ApplicationRecord
 
   def cpf_valido
     return unless cpf.present? && !CPF.valid?(cpf)
+
     errors.add(:cpf, 'is invalid')
   end
 end

@@ -393,6 +393,62 @@ paths:
                       type: string
                     categoria_id:
                       type: integer
+  "/api/v1/sessions":
+    post:
+      summary: Login
+      tags:
+      - Api::V1::Sessions
+      parameters: []
+      responses:
+        '200':
+          description: Successful Login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  primeiro_acesso:
+                    type: boolean
+        '401':
+          description: Invalid credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    password:
+                      type: string
+                  required:
+                  - email
+                  - password
+    delete:
+      summary: Logout
+      tags:
+      - Api::V1::Sessions
+      parameters: []
+      responses:
+        '204':
+          description: Successful Logout
+        '404':
+          description: Token not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required:
+              - token
   "/api/v1/usuarios":
     post:
       summary: Create usuario
