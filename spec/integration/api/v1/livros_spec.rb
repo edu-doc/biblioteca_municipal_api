@@ -19,9 +19,7 @@ RSpec.describe 'api/v1/livros', type: :request do
               autor: { type: :string },
               status: { type: :string, enum: %w[disponivel emprestado] },
               observacoes: { type: :string },
-              categoria_id: { type: :integer },
-              created_at: { type: :string, format: 'date-time' },
-              updated_at: { type: :string, format: 'date-time' }
+              categoria_id: { type: :integer }
             }
           }
         }

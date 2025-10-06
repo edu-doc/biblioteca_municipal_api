@@ -232,6 +232,173 @@ paths:
                   properties:
                     nome:
                       type: string
+  "/api/v1/emprestimos":
+    post:
+      summary: Create emprestimo
+      tags:
+      - Api::V1::Emprestimos
+      parameters: []
+      responses:
+        '201':
+          description: emprestimo created
+        '422':
+          description: create emprestimo error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                emprestimo:
+                  type: object
+                  properties:
+                    livro_id:
+                      type: integer
+                    usuario_id:
+                      type: integer
+                    bibliotecario_id:
+                      type: integer
+                    data_emprestimo:
+                      type: string
+                      format: date-time
+                    data_limite_devolucao:
+                      type: string
+                      format: date-time
+                    data_devolucao:
+                      type: string
+                      format: date-time
+                      nullable: true
+    get:
+      summary: Get emprestimos
+      tags:
+      - Api::V1::Emprestimos
+      responses:
+        '200':
+          description: emprestimos found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    livro_id:
+                      type: integer
+                    usuario_id:
+                      type: integer
+                    bibliotecario_id:
+                      type: integer
+                    data_emprestimo:
+                      type: string
+                      format: date-time
+                    data_limite_devolucao:
+                      type: string
+                      format: date-time
+                    data_devolucao:
+                      type: string
+                      format: date-time
+                      nullable: true
+  "/api/v1/emprestimos/{id}":
+    get:
+      summary: Get emprestimo
+      tags:
+      - Api::V1::Emprestimos
+      parameters:
+      - name: id
+        in: path
+        description: id for emprestimo
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: emprestimo found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  livro_id:
+                    type: integer
+                  usuario_id:
+                    type: integer
+                  bibliotecario_id:
+                    type: integer
+                  data_emprestimo:
+                    type: string
+                    format: date-time
+                  data_limite_devolucao:
+                    type: string
+                    format: date-time
+                  data_devolucao:
+                    type: string
+                    format: date-time
+                    nullable: true
+        '404':
+          description: emprestimo not found
+    delete:
+      summary: Delete emprestimo
+      tags:
+      - Api::V1::Emprestimos
+      parameters:
+      - name: id
+        in: path
+        description: id for emprestimo
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: emprestimo deleted
+        '404':
+          description: emprestimo not found
+    put:
+      summary: Update emprestimo
+      tags:
+      - Api::V1::Emprestimos
+      parameters:
+      - name: id
+        in: path
+        description: id for emprestimo
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: emprestimo updated
+        '404':
+          description: emprestimo not found
+        '422':
+          description: update emprestimo error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                emprestimo:
+                  type: object
+                  properties:
+                    livro_id:
+                      type: integer
+                    usuario_id:
+                      type: integer
+                    bibliotecario_id:
+                      type: integer
+                    data_emprestimo:
+                      type: string
+                      format: date-time
+                    data_limite_devolucao:
+                      type: string
+                      format: date-time
+                    data_devolucao:
+                      type: string
+                      format: date-time
+                      nullable: true
   "/api/v1/livros":
     post:
       summary: Create livro
@@ -265,12 +432,6 @@ paths:
                       type: string
                     categoria_id:
                       type: integer
-                    created_at:
-                      type: string
-                      format: date-time
-                    updated_at:
-                      type: string
-                      format: date-time
     get:
       summary: Get livros
       tags:
