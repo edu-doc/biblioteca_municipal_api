@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       resources :bibliotecarios, only: %i[show create update destroy]
       resource :sessions, only: %i[create destroy]
       resources :categorias, only: %i[index show create update destroy]
+      resources :livros, only: %i[index show create update destroy]
     end
   end
 end

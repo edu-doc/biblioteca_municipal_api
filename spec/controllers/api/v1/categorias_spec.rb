@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::CategoriasController, type: :controller do
-
   describe 'GET /index' do
     before(:each) do
       @categoria = FactoryBot.create :categoria

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Categoria, type: :model do
@@ -16,5 +18,4 @@ RSpec.describe Categoria, type: :model do
     it { should validate_uniqueness_of(:nome) }
     it { should validate_presence_of(:nome) }
   end
-
 end

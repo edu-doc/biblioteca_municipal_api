@@ -39,7 +39,6 @@ module Api
       def bibliotecario_params
         params.require(:bibliotecario).permit(:email, :password, :nome)
       end
-
     end
   end
 end
