@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 20_251_005_120_803) do
+ActiveRecord::Schema[8.0].define(version: 20_251_006_011_742) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'pg_catalog.plpgsql'
 
@@ -32,4 +32,24 @@ ActiveRecord::Schema[8.0].define(version: 20_251_005_120_803) do
     t.index ['reset_password_token'], name: 'index_bibliotecarios_on_reset_password_token', unique: true
     t.index ['token'], name: 'index_bibliotecarios_on_token', unique: true
   end
+
+  create_table 'categoria', force: :cascade do |t|
+    t.string 'nome', null: false
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['nome'], name: 'index_categoria_on_nome', unique: true
+  end
+
+  create_table 'livros', force: :cascade do |t|
+    t.string 'titulo', null: false
+    t.string 'autor', null: false
+    t.integer 'status', default: 0, null: false
+    t.text 'observacoes'
+    t.bigint 'categoria_id', null: false
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['categoria_id'], name: 'index_livros_on_categoria_id'
+  end
+
+  add_foreign_key 'livros', 'categoria', column: 'categoria_id'
 end
