@@ -14,7 +14,7 @@ paths:
         '201':
           description: bibliotecario created
         '422':
-          description: create user error
+          description: create bibliotecario error
       requestBody:
         content:
           application/json:
@@ -115,6 +115,272 @@ paths:
                       type: string
                     nome:
                       type: string
+  "/api/v1/categorias":
+    post:
+      summary: Create categoria
+      tags:
+      - Api::V1::Categorias
+      parameters: []
+      responses:
+        '201':
+          description: categoria created
+        '422':
+          description: create categoria error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoria:
+                  type: object
+                  properties:
+                    nome:
+                      type: string
+    get:
+      summary: Get categorias
+      tags:
+      - Api::V1::Categorias
+      responses:
+        '200':
+          description: categorias found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    nome:
+                      type: string
+  "/api/v1/categorias/{id}":
+    get:
+      summary: Get categoria
+      tags:
+      - Api::V1::Categorias
+      parameters:
+      - name: id
+        in: path
+        description: id for categoria
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: categoria found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nome:
+                    type: string
+        '404':
+          description: categoria not found
+    delete:
+      summary: Delete categoria
+      tags:
+      - Api::V1::Categorias
+      parameters:
+      - name: id
+        in: path
+        description: id for categoria
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: categoria deleted
+        '404':
+          description: categoria not found
+    put:
+      summary: Update categoria
+      tags:
+      - Api::V1::Categorias
+      parameters:
+      - name: id
+        in: path
+        description: id for categoria
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: categoria updated
+        '404':
+          description: categoria not found
+        '422':
+          description: update categoria error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoria:
+                  type: object
+                  properties:
+                    nome:
+                      type: string
+  "/api/v1/livros":
+    post:
+      summary: Create livro
+      tags:
+      - Api::V1::Livros
+      parameters: []
+      responses:
+        '201':
+          description: livro created
+        '422':
+          description: create livro error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                livro:
+                  type: object
+                  properties:
+                    titulo:
+                      type: string
+                    autor:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                      - disponivel
+                      - emprestado
+                    observacoes:
+                      type: string
+                    categoria_id:
+                      type: integer
+    get:
+      summary: Get livros
+      tags:
+      - Api::V1::Livros
+      responses:
+        '200':
+          description: livros found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    titulo:
+                      type: string
+                    autor:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                      - disponivel
+                      - emprestado
+                    observacoes:
+                      type: string
+                    categoria_id:
+                      type: integer
+  "/api/v1/livros/{id}":
+    get:
+      summary: Get livro
+      tags:
+      - Api::V1::Livros
+      parameters:
+      - name: id
+        in: path
+        description: id for livro
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: livro found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  titulo:
+                    type: string
+                  autor:
+                    type: string
+                  status:
+                    type: string
+                    enum:
+                    - disponivel
+                    - emprestado
+                  observacoes:
+                    type: string
+                  categoria_id:
+                    type: integer
+        '404':
+          description: livro not found
+    delete:
+      summary: Delete livro
+      tags:
+      - Api::V1::Livros
+      parameters:
+      - name: id
+        in: path
+        description: id for livro
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: livro deleted
+        '404':
+          description: livro not found
+    put:
+      summary: Update livro
+      tags:
+      - Api::V1::Livros
+      parameters:
+      - name: id
+        in: path
+        description: id for livro
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: livro updated
+        '404':
+          description: livro not found
+        '422':
+          description: update livro error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                livro:
+                  type: object
+                  properties:
+                    titulo:
+                      type: string
+                    autor:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                      - disponivel
+                      - emprestado
+                    observacoes:
+                      type: string
+                    categoria_id:
+                      type: integer
 servers:
 - url: http://{defaultHost}
   variables:

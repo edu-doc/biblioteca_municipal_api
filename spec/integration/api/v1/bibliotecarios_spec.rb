@@ -29,7 +29,7 @@ RSpec.describe 'api/v1/bibliotecarios', type: :request do
       end
 
 
-      response '422', 'create user error' do
+      response '422', 'create bibliotecario error' do
         let(:bibliotecario) { { bibliotecario: { email: 'invalidgmail.com', password: '123', nome: 'Errito' } } }
         run_test!
       end
@@ -125,6 +125,7 @@ RSpec.describe 'api/v1/bibliotecarios', type: :request do
         let(:bibliotecario) { { bibliotecario: { email: 'invalidgmail.com', password: '123', nome: 'Errito' } } }
         run_test!
       end
+      
     end
   end
 end
