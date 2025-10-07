@@ -173,6 +173,7 @@ RSpec.describe 'api/v1/emprestimos', type: :request do
 
         run_test!
       end
+
     end
   end
 end
