@@ -19,6 +19,12 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Fix Shebangs for Linux
+        # Altera '#!/usr/bin/env ruby.exe' para '#!/usr/bin/env ruby'
+        run: |
+          chmod +x bin/*
+          sed -i 's/ruby\.exe$/ruby/' bin/*
+
       - name: Dar permissão de execução ao brakeman
         run: chmod +x bin/brakeman
 
@@ -37,9 +43,14 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Fix Shebangs for Linux
+        # Altera '#!/usr/bin/env ruby.exe' para '#!/usr/bin/env ruby'
+        run: |
+          chmod +x bin/*
+          sed -i 's/ruby\.exe$/ruby/' bin/*
+
       - name: Garantir permissão de execução para rubocop
         run: chmod +x bin/rubocop
 
       - name: Lint code for consistent style
         run: bin/rubocop -f github
-
