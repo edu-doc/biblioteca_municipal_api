@@ -26,17 +26,17 @@ module Api
         end
 
         unless livro.disponivel?
-          return render json: { errors: 'Livro não está disponível para empréstimo' }, status: :unprocessable_entity
+          return render json: { errors: 'Livro não está disponível para empréstimo' }, status: 422
         end
 
         unless usuario.senha == params[:emprestimo][:senha]
-          return render json: { errors: 'Senha de empréstimo inválida' }, status: :unauthorized
+          return render json: { errors: 'Senha de empréstimo inválida' }, status: 401
         end
 
         ::ActiveRecord::Base.transaction do
           data_emprestimo = Time.current
 
-          data_limite = data_emprestimo + 14.days
+          data_limite = ::Emprestimo.data_limite_inicial(data_emprestimo)
 
           @emprestimo = ::Emprestimo.new(
             livro: livro,
@@ -50,7 +50,7 @@ module Api
             livro.emprestado!
             render json: @emprestimo, status: :created
           else
-            render json: { errors: @emprestimo.errors }, status: :unprocessable_entity
+            render json: { errors: @emprestimo.errors }, status: 422
             raise ActiveRecord::Rollback
           end
         end
@@ -61,10 +61,36 @@ module Api
 
         begin
           emprestimo.registrar_devolucao!
-          render json: emprestimo, status: :ok
+          render json: emprestimo, status: 200
         rescue ActiveRecord::RecordInvalid => e
-          render json: { errors: e.record.errors }, status: :unprocessable_entity
+          render json: { errors: e.record.errors }, status: 422
         end
+      end
+
+      # POST /api/v1/emprestimos/renovar
+      def renovar
+        livro_id = params[:emprestimo][:livro_id]
+        senha = params[:emprestimo][:senha]
+
+        emprestimo = ::Emprestimo.find_by(livro_id: livro_id, data_devolucao: nil)
+
+        unless emprestimo
+          return render json: { errors: 'Empréstimo ativo para este livro não encontrado.' }, status: 404
+        end
+
+        usuario = emprestimo.usuario
+
+        return render json: { errors: 'Senha de empréstimo inválida.' }, status: 401 unless usuario.senha == senha
+
+        if emprestimo.renovar!
+          render json: emprestimo, status: :ok
+        else
+          render json: { errors: emprestimo.errors.full_messages }, status: 422
+        end
+      rescue ActiveRecord::RecordNotFound
+        render json: { errors: 'Livro não encontrado.' }, status: 404
+      rescue ActionController::ParameterMissing
+        render json: { errors: 'Parâmetros livro_id e senha são obrigatórios.' }, status: 400
       end
 
       def destroy
@@ -76,8 +102,8 @@ module Api
       # GET /api/v1/emprestimos/atrasados
       def atrasados
         emprestimos_atrasados = ::Emprestimo.where('data_limite_devolucao < ? AND data_devolucao IS NULL', Time.current)
-        
-        render json: emprestimos_atrasados, status: :ok
+
+        render json: emprestimos_atrasados, status: 200
       end
 
       private

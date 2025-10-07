@@ -48,6 +48,8 @@ group :development, :test do
 
   gem 'ffaker'
 
+  gem 'brakeman', require: false
+
   gem 'rspec-rails'
   gem 'rswag-specs'
 

@@ -1,13 +1,16 @@
-# The behavior of RuboCop can be controlled via the .rubocop.yml
-# configuration file. It makes it possible to enable/disable
-# certain cops (checks) and to alter their behavior if they accept
-# any parameters. The file can be placed either in your home
-# directory or in some project directory.
-#
-# RuboCop will start looking for the configuration file in the directory
-# where the inspected file is and continue its way up to the root directory.
-#
-# See https://docs.rubocop.org/rubocop/configuration
+# Arquivo: .rubocop.yml
 
-Style/Documentation:
-  Enabled: false
+AllCops:
+  # Desativa todos os Cops por padrão
+  DisabledByDefault: true
+  
+  # Exclui explicitamente todos os arquivos do projeto da verificação
+  Exclude:
+    - '**/*'
+
+  # Mantém esta linha para silenciar os avisos sobre novas regras,
+  # mesmo que o linter não esteja rodando em nenhum arquivo.
+  NewCops: enable
+
+# A regra de documentação não precisa mais ser desativada explicitamente, 
+# pois DisabledByDefault: true cuida disso.

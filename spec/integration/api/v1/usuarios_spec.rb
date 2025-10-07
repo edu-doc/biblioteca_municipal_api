@@ -137,4 +137,47 @@ RSpec.describe 'api/v1/usuarios', type: :request do
       end
     end
   end
+
+  #--------------------------------------------- Emprestimos do Usuário -------------------------------------------------
+
+  path '/api/v1/usuarios/{id}/emprestimos' do
+    get 'Get histórico de empréstimos do usuário' do
+      tags 'Api::V1::Usuarios'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :string, description: 'id for usuario', required: true
+
+      response '200', 'histórico de empréstimos encontrado' do
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   livro_id: { type: :integer },
+                   usuario_id: { type: :integer },
+                   bibliotecario_id: { type: :integer },
+                   data_emprestimo: { type: :string, format: 'date-time' },
+                   data_limite_devolucao: { type: :string, format: 'date-time' },
+                   data_devolucao: { type: :string, format: 'date-time', nullable: true }
+                 }
+               }
+
+        let!(:usuario_existente) { FactoryBot.create(:usuario) }
+        before do
+          # Cria 3 empréstimos para o usuário
+          FactoryBot.create_list(:emprestimo, 3, usuario: usuario_existente)
+        end
+        let(:id) { usuario_existente.id }
+
+        run_test! do |response|
+          data = JSON.parse(response.body, symbolize_names: true)
+          expect(data.size).to eq(3)
+        end
+      end
+
+      response '404', 'usuario not found' do
+        let(:id) { -1 }
+        run_test!
+      end
+    end
+  end
 end

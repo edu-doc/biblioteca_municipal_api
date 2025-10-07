@@ -299,6 +299,39 @@ paths:
                       type: string
                       format: date-time
                       nullable: true
+  "/api/v1/emprestimos/renovar":
+    post:
+      summary: Renovação Online (Usuário)
+      tags:
+      - Api::V1::Emprestimos
+      parameters: []
+      responses:
+        '200':
+          description: renovação registrada com sucesso
+        '401':
+          description: Senha de empréstimo inválida
+        '404':
+          description: Empréstimo ativo para este livro não encontrado
+        '422':
+          description: Limite de renovação atingido
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                emprestimo:
+                  type: object
+                  properties:
+                    livro_id:
+                      type: integer
+                      description: ID do livro a ser renovado
+                    senha:
+                      type: string
+                      description: Senha de empréstimo do usuário
+                  required:
+                  - livro_id
+                  - senha
   "/api/v1/emprestimos/{id}":
     get:
       summary: Get emprestimo
@@ -770,6 +803,48 @@ paths:
                       type: string
                     email:
                       type: string
+  "/api/v1/usuarios/{id}/emprestimos":
+    get:
+      summary: Get histórico de empréstimos do usuário
+      tags:
+      - Api::V1::Usuarios
+      parameters:
+      - name: id
+        in: path
+        description: id for usuario
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: histórico de empréstimos encontrado
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    livro_id:
+                      type: integer
+                    usuario_id:
+                      type: integer
+                    bibliotecario_id:
+                      type: integer
+                    data_emprestimo:
+                      type: string
+                      format: date-time
+                    data_limite_devolucao:
+                      type: string
+                      format: date-time
+                    data_devolucao:
+                      type: string
+                      format: date-time
+                      nullable: true
+        '404':
+          description: usuario not found
 servers:
 - url: http://{defaultHost}
   variables:
