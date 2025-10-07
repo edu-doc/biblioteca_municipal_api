@@ -3,7 +3,7 @@
 module Api
   module V1
     class EmprestimosController < ApplicationController
-      before_action :authenticate_with_token, only: [:create]
+      before_action :authenticate_with_token, only: %i[create update]
 
       def index
         @emprestimos = ::Emprestimo.all
@@ -57,11 +57,13 @@ module Api
       end
 
       def update
-        emprestimo = Emprestimo.find(params[:id])
-        if emprestimo.update(emprestimo_params)
-          render json: emprestimo, status: 200
-        else
-          render json: { errors: emprestimo.errors }, status: 422
+        emprestimo = ::Emprestimo.find(params[:id])
+
+        begin
+          emprestimo.registrar_devolucao!
+          render json: emprestimo, status: :ok
+        rescue ActiveRecord::RecordInvalid => e
+          render json: { errors: e.record.errors }, status: :unprocessable_entity
         end
       end
 

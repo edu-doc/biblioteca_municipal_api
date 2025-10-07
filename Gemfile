@@ -62,6 +62,8 @@ group :development, :test do
   gem 'cpf_cnpj', '~> 1.0', '>= 1.0.1'
 
   gem 'email_validator', '~> 2.2', '>= 2.2.4'
+
+  gem 'letter_opener', '~> 1.10'
 end
 
 group :test do

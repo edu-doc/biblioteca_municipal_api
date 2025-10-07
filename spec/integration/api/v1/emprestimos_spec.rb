@@ -146,50 +146,31 @@ RSpec.describe 'api/v1/emprestimos', type: :request do
 
     #--------------------------------------------- UPDATE -------------------------------------------------
 
-    put 'Update emprestimo' do
+    put 'Registrar Devolução de um Empréstimo' do
       tags 'Api::V1::Emprestimos'
       consumes 'application/json'
-      parameter name: :id, in: :path, type: :string, description: 'id for emprestimo', required: true
-      parameter name: :emprestimo, in: :body, schema: {
-        type: :object,
-        properties: {
-          emprestimo: {
-            type: :object,
-            properties: {
-              livro_id: { type: :integer },
-              usuario_id: { type: :integer },
-              bibliotecario_id: { type: :integer },
-              data_emprestimo: { type: :string, format: 'date-time' },
-              data_limite_devolucao: { type: :string, format: 'date-time' },
-              data_devolucao: { type: :string, format: 'date-time', nullable: true }
-            }
-          }
-        }
-      }
+      parameter name: 'Authorization', in: :header, type: :string, description: 'Token de autenticação do bibliotecário'
+      parameter name: :id, in: :path, type: :string, description: 'ID do empréstimo a ser devolvido', required: true
 
-      response '200', 'emprestimo updated' do
-        let!(:emprestimo_existente) { FactoryBot.create(:emprestimo) }
-        let!(:novo_livro) { FactoryBot.create(:livro) }
+      # Esta ação não precisa de um corpo (body), então não precisamos do 'parameter name: :emprestimo'
 
+      response '200', 'devolução registrada com sucesso' do
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let!(:emprestimo_existente) { FactoryBot.create(:emprestimo, bibliotecario: bibliotecario_logado) }
+
+        let(:Authorization) { bibliotecario_logado.token }
         let(:id) { emprestimo_existente.id }
 
-        let(:emprestimo) do
-          { emprestimo: { livro_id: novo_livro.id } }
-        end
+        # Não é necessário enviar um corpo na requisição 'let(:emprestimo)'
+
         run_test!
       end
 
-      response '404', 'emprestimo not found' do
+      response '404', 'empréstimo não encontrado' do
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let(:Authorization) { bibliotecario_logado.token }
         let(:id) { -1 }
-        let(:emprestimo) do
-          { emprestimo: { livro_id: 1 } }
-        end
-        run_test!
-      end
 
-      response '422', 'update emprestimo error' do
-        let(:id) { FactoryBot.create(:emprestimo).id }
-        let(:emprestimo) { { emprestimo: { livro_id: -1 } } }
         run_test!
       end
     end
