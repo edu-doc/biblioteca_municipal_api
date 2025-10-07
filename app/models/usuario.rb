@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Usuario < ApplicationRecord
-
   has_many :emprestimos
 
   validates :nome, :cpf, :telefone, presence: true

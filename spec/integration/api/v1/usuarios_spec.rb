@@ -180,5 +180,4 @@ RSpec.describe 'api/v1/usuarios', type: :request do
       end
     end
   end
-
 end

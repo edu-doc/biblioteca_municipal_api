@@ -80,9 +80,7 @@ module Api
 
         usuario = emprestimo.usuario
 
-        unless usuario.senha == senha
-          return render json: { errors: 'Senha de empréstimo inválida.' }, status: 401
-        end
+        return render json: { errors: 'Senha de empréstimo inválida.' }, status: 401 unless usuario.senha == senha
 
         if emprestimo.renovar!
           render json: emprestimo, status: :ok
@@ -92,7 +90,7 @@ module Api
       rescue ActiveRecord::RecordNotFound
         render json: { errors: 'Livro não encontrado.' }, status: 404
       rescue ActionController::ParameterMissing
-         render json: { errors: 'Parâmetros livro_id e senha são obrigatórios.' }, status: 400
+        render json: { errors: 'Parâmetros livro_id e senha são obrigatórios.' }, status: 400
       end
 
       def destroy
@@ -104,7 +102,7 @@ module Api
       # GET /api/v1/emprestimos/atrasados
       def atrasados
         emprestimos_atrasados = ::Emprestimo.where('data_limite_devolucao < ? AND data_devolucao IS NULL', Time.current)
-        
+
         render json: emprestimos_atrasados, status: 200
       end
 

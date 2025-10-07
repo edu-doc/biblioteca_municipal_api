@@ -57,8 +57,6 @@ class Emprestimo < ApplicationRecord
     calcular_data_limite(data_emprestimo, 15)
   end
 
-  private
-
   def self.calcular_data_limite(data_base, dias_uteis_a_somar)
     data_limite = data_base
 
@@ -69,5 +67,4 @@ class Emprestimo < ApplicationRecord
 
     data_limite.beginning_of_day
   end
-
 end
