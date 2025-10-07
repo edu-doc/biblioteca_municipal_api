@@ -36,7 +36,7 @@ module Api
         ::ActiveRecord::Base.transaction do
           data_emprestimo = Time.current
 
-          data_limite = data_emprestimo + 15.days
+          data_limite = data_emprestimo + 14.days
 
           @emprestimo = ::Emprestimo.new(
             livro: livro,
@@ -71,6 +71,13 @@ module Api
         emprestimo = Emprestimo.find(params[:id])
         emprestimo.destroy
         head 204
+      end
+
+      # GET /api/v1/emprestimos/atrasados
+      def atrasados
+        emprestimos_atrasados = ::Emprestimo.where('data_limite_devolucao < ? AND data_devolucao IS NULL', Time.current)
+        
+        render json: emprestimos_atrasados, status: :ok
       end
 
       private

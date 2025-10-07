@@ -11,6 +11,8 @@ class Bibliotecario < ApplicationRecord
 
   before_validation :definir_senha_inicial_do_devise, on: :create
 
+  before_create :gerador_token_autenticacao
+
   def definir_senha_inicial_do_devise
     return unless password.blank? && senha_provisoria.present?
 
