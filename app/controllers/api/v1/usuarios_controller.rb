@@ -32,6 +32,15 @@ module Api
         head 204
       end
 
+      # GET /api/v1/usuarios/:id/emprestimos
+      def emprestimos
+        usuario = Usuario.find(params[:id])
+        emprestimos = usuario.emprestimos.all.order(data_emprestimo: :desc)
+        render json: emprestimos, status: :ok
+      rescue ActiveRecord::RecordNotFound
+        render json: { errors: 'Usuário não encontrado' }, status: 404
+      end
+
       private
 
       def usuario_params

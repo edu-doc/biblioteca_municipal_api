@@ -32,7 +32,7 @@ module Api
         if bibliotecario.update(params_to_use)
           render json: bibliotecario, status: :ok, location: [:api, :v1, bibliotecario]
         else
-          render json: { errors: bibliotecario.errors }, status: :unprocessable_entity
+          render json: { errors: bibliotecario.errors }, status: 422
         end
       end
 

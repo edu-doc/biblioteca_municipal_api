@@ -19,10 +19,15 @@ Rails.application.routes.draw do
       resource :sessions, only: %i[create destroy]
       resources :categorias, only: %i[index show create update destroy]
       resources :livros, only: %i[index show create update destroy]
-      resources :usuarios, only: %i[show create update destroy]
+      resources :usuarios, only: %i[show create update destroy] do
+        member do
+          get :emprestimos
+        end
+      end
       resources :emprestimos, only: %i[index show create update destroy] do
         collection do
           get :atrasados
+          post :renovar
         end
       end
       resources :multas, only: %i[index show update]

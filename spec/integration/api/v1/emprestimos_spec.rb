@@ -95,6 +95,96 @@ RSpec.describe 'api/v1/emprestimos', type: :request do
     end
   end
 
+#---------------------------------------------- Renovação -------------------------------------------------
+
+  path '/api/v1/emprestimos/renovar' do
+      post 'Renovação Online (Usuário)' do
+        tags 'Api::V1::Emprestimos'
+        consumes 'application/json'
+
+        parameter name: :emprestimo, in: :body, schema: {
+          type: :object,
+          properties: {
+            emprestimo: {
+              type: :object,
+              properties: {
+                livro_id: { type: :integer, description: 'ID do livro a ser renovado' },
+                senha: { type: :string, description: 'Senha de empréstimo do usuário' }
+              },
+              required: %w[livro_id senha]
+            }
+          }
+        }
+
+        response '200', 'renovação registrada com sucesso' do
+          let!(:usuario) { FactoryBot.create(:usuario) }
+          let!(:livro) { FactoryBot.create(:livro, status: :emprestado) }
+          let!(:emprestimo_ativo) { FactoryBot.create(:emprestimo, usuario: usuario, livro: livro, contador_renovacao: 0, data_devolucao: nil) }
+
+          let(:emprestimo) do
+            {
+              emprestimo: {
+                livro_id: livro.id,
+                senha: usuario.senha
+              }
+            }
+          end
+
+          run_test! do |response|
+            data = JSON.parse(response.body, symbolize_names: true)
+            expect(data[:contador_renovacao]).to eq(1)
+          end
+        end
+
+        response '401', 'Senha de empréstimo inválida' do
+          let!(:usuario) { FactoryBot.create(:usuario) }
+          let!(:livro) { FactoryBot.create(:livro, status: :emprestado) }
+          let!(:emprestimo_ativo) { FactoryBot.create(:emprestimo, usuario: usuario, livro: livro, contador_renovacao: 0, data_devolucao: nil) }
+
+          let(:emprestimo) do
+            {
+              emprestimo: {
+                livro_id: livro.id,
+                senha: 'senha-invalida'
+              }
+            }
+          end
+
+          run_test!
+        end
+
+        response '404', 'Empréstimo ativo para este livro não encontrado' do
+          let!(:usuario) { FactoryBot.create(:usuario) }
+
+          let(:emprestimo) do
+            {
+              emprestimo: {
+                livro_id: -1,
+                senha: usuario.senha
+              }
+            }
+          end
+          run_test!
+        end
+
+        response '422', 'Limite de renovação atingido' do
+          let!(:usuario) { FactoryBot.create(:usuario) }
+          let!(:livro) { FactoryBot.create(:livro, status: :emprestado) }
+          let!(:emprestimo_max_renovacoes) { FactoryBot.create(:emprestimo, usuario: usuario, livro: livro, contador_renovacao: ::Emprestimo::MAX_RENOVATIONS, data_devolucao: nil) }
+
+          let(:emprestimo) do
+            {
+              emprestimo: {
+                livro_id: livro.id,
+                senha: usuario.senha
+              }
+            }
+          end
+          run_test!
+        end
+      end
+  end
+
   path '/api/v1/emprestimos/{id}' do
     #--------------------------------------------- SHOW -------------------------------------------------
 
@@ -175,5 +265,7 @@ RSpec.describe 'api/v1/emprestimos', type: :request do
       end
 
     end
+
   end
+
 end
