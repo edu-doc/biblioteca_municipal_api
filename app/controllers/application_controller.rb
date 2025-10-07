@@ -15,4 +15,5 @@ class ApplicationController < ActionController::API
       errors: 'Acesso negado. Você precisa alterar sua senha provisória antes de continuar.'
     }, status: :forbidden
   end
+
 end

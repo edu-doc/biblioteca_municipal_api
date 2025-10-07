@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :bibliotecarios
+  devise_for :bibliotecarios, controllers: { passwords: 'bibliotecarios/passwords' }
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -20,6 +20,8 @@ Rails.application.routes.draw do
       resources :categorias, only: %i[index show create update destroy]
       resources :livros, only: %i[index show create update destroy]
       resources :usuarios, only: %i[show create update destroy]
+      resources :emprestimos, only: %i[index show create update destroy]
+      resources :multas, only: %i[index show update]
     end
   end
 end

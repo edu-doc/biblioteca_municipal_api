@@ -10,8 +10,10 @@ class Usuario < ApplicationRecord
   before_create :cpf_valido
   before_create :gerar_senha_emprestimo
 
+  after_create :enviar_email_com_senha
+
   def gerar_senha_emprestimo
-    self.senha = SecureRandom.hex(8)
+    self.senha = SecureRandom.hex(4)
   end
 
   private
@@ -20,5 +22,9 @@ class Usuario < ApplicationRecord
     return unless cpf.present? && !CPF.valid?(cpf)
 
     errors.add(:cpf, 'is invalid')
+  end
+
+  def enviar_email_com_senha
+    UsuarioMailer.enviar_senha_emprestimo(self).deliver_now
   end
 end

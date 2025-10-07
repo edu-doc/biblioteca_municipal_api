@@ -1,0 +1,83 @@
+# frozen_string_literal: true
+
+module Api
+  module V1
+    class EmprestimosController < ApplicationController
+      before_action :authenticate_with_token, only: %i[create update]
+
+      def index
+        @emprestimos = ::Emprestimo.all
+        render json: @emprestimos, status: 200
+      end
+
+      def show
+        emprestimo = Emprestimo.find(params[:id])
+        render json: emprestimo,
+               only: %i[livro_id usuario_id bibliotecario_id data_emprestimo data_limite_devolucao data_devolucao created_at updated_at], status: 200
+      end
+
+      def create
+        begin
+          livro = ::Livro.find(params[:emprestimo][:livro_id])
+          usuario = ::Usuario.find(params[:emprestimo][:usuario_id])
+        rescue ActiveRecord::RecordNotFound
+          render json: { errors: 'Livro ou Usuário não encontrado' }, status: 404
+          return
+        end
+
+        unless livro.disponivel?
+          return render json: { errors: 'Livro não está disponível para empréstimo' }, status: :unprocessable_entity
+        end
+
+        unless usuario.senha == params[:emprestimo][:senha]
+          return render json: { errors: 'Senha de empréstimo inválida' }, status: :unauthorized
+        end
+
+        ::ActiveRecord::Base.transaction do
+          data_emprestimo = Time.current
+
+          data_limite = data_emprestimo + 15.days
+
+          @emprestimo = ::Emprestimo.new(
+            livro: livro,
+            usuario: usuario,
+            bibliotecario: current_bibliotecario,
+            data_emprestimo: data_emprestimo,
+            data_limite_devolucao: data_limite
+          )
+
+          if @emprestimo.save
+            livro.emprestado!
+            render json: @emprestimo, status: :created
+          else
+            render json: { errors: @emprestimo.errors }, status: :unprocessable_entity
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
+
+      def update
+        emprestimo = ::Emprestimo.find(params[:id])
+
+        begin
+          emprestimo.registrar_devolucao!
+          render json: emprestimo, status: :ok
+        rescue ActiveRecord::RecordInvalid => e
+          render json: { errors: e.record.errors }, status: :unprocessable_entity
+        end
+      end
+
+      def destroy
+        emprestimo = Emprestimo.find(params[:id])
+        emprestimo.destroy
+        head 204
+      end
+
+      private
+
+      def emprestimo_params
+        params.require(:emprestimo).permit(:livro_id, :usuario_id, :senha)
+      end
+    end
+  end
+end

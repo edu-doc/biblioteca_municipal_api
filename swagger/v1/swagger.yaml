@@ -232,6 +232,150 @@ paths:
                   properties:
                     nome:
                       type: string
+  "/api/v1/emprestimos":
+    post:
+      summary: Create emprestimo
+      tags:
+      - Api::V1::Emprestimos
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token de autenticação do bibliotecário
+        schema:
+          type: string
+      responses:
+        '201':
+          description: emprestimo created
+        '404':
+          description: not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                emprestimo:
+                  type: object
+                  properties:
+                    livro_id:
+                      type: integer
+                    usuario_id:
+                      type: integer
+                    senha:
+                      type: string
+                  required:
+                  - livro_id
+                  - usuario_id
+                  - senha
+    get:
+      summary: Get emprestimos
+      tags:
+      - Api::V1::Emprestimos
+      responses:
+        '200':
+          description: emprestimos found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    livro_id:
+                      type: integer
+                    usuario_id:
+                      type: integer
+                    bibliotecario_id:
+                      type: integer
+                    data_emprestimo:
+                      type: string
+                      format: date-time
+                    data_limite_devolucao:
+                      type: string
+                      format: date-time
+                    data_devolucao:
+                      type: string
+                      format: date-time
+                      nullable: true
+  "/api/v1/emprestimos/{id}":
+    get:
+      summary: Get emprestimo
+      tags:
+      - Api::V1::Emprestimos
+      parameters:
+      - name: id
+        in: path
+        description: id for emprestimo
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: emprestimo found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  livro_id:
+                    type: integer
+                  usuario_id:
+                    type: integer
+                  bibliotecario_id:
+                    type: integer
+                  data_emprestimo:
+                    type: string
+                    format: date-time
+                  data_limite_devolucao:
+                    type: string
+                    format: date-time
+                  data_devolucao:
+                    type: string
+                    format: date-time
+                    nullable: true
+        '404':
+          description: emprestimo not found
+    delete:
+      summary: Delete emprestimo
+      tags:
+      - Api::V1::Emprestimos
+      parameters:
+      - name: id
+        in: path
+        description: id for emprestimo
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: emprestimo deleted
+        '404':
+          description: emprestimo not found
+    put:
+      summary: Registrar Devolução de um Empréstimo
+      tags:
+      - Api::V1::Emprestimos
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token de autenticação do bibliotecário
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ID do empréstimo a ser devolvido
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: devolução registrada com sucesso
+        '404':
+          description: empréstimo não encontrado
   "/api/v1/livros":
     post:
       summary: Create livro
@@ -265,12 +409,6 @@ paths:
                       type: string
                     categoria_id:
                       type: integer
-                    created_at:
-                      type: string
-                      format: date-time
-                    updated_at:
-                      type: string
-                      format: date-time
     get:
       summary: Get livros
       tags:
@@ -393,6 +531,72 @@ paths:
                       type: string
                     categoria_id:
                       type: integer
+  "/api/v1/multas":
+    get:
+      summary: List multas
+      tags:
+      - Api::V1::Multas
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token de autenticação
+        schema:
+          type: string
+      responses:
+        '200':
+          description: multas found
+        '401':
+          description: unauthorized
+  "/api/v1/multas/{id}":
+    get:
+      summary: Get multa
+      tags:
+      - Api::V1::Multas
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: multa found
+        '404':
+          description: multa not found
+    put:
+      summary: Update multa
+      tags:
+      - Api::V1::Multas
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: multa updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                multa:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      enum:
+                      - pago
   "/api/v1/sessions":
     post:
       summary: Login

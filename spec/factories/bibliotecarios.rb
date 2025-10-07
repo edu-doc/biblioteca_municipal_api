@@ -5,5 +5,6 @@ FactoryBot.define do
     email { FFaker::Internet.email }
     nome { FFaker::Name.name }
     senha_provisoria { FFaker::Internet.password }
+    sequence(:token) { |n| "auniquetoken#{n}" }
   end
 end
