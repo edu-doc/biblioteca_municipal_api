@@ -38,21 +38,26 @@ RSpec.describe Api::V1::EmprestimosController, type: :controller do
   describe 'POST  #create' do
     context 'when is successfully created' do
       before(:each) do
-        @categoria = FactoryBot.create(:categoria)
-        @livro = FactoryBot.create(:livro, categoria_id: @categoria.id)
-        @usuario = FactoryBot.create(:usuario)
-        @bibliotecario = FactoryBot.create(:bibliotecario)
-        @emprestimo_atributos = FactoryBot.attributes_for(:emprestimo)
-        @emprestimo_atributos[:livro_id] = @livro.id
-        @emprestimo_atributos[:usuario_id] = @usuario.id
-        @emprestimo_atributos[:bibliotecario_id] = @bibliotecario.id
+        categoria = FactoryBot.create(:categoria)
+        livro = FactoryBot.create(:livro, categoria_id: categoria.id)
+        usuario = FactoryBot.create(:usuario)
+
+        bibliotecario = FactoryBot.create(:bibliotecario, primeiro_acesso: false)
+
+        request.headers['Authorization'] = bibliotecario.token
+
+        @emprestimo_atributos = {
+          livro_id: livro.id,
+          usuario_id: usuario.id,
+          senha: usuario.senha
+        }
+
         post :create, params: { emprestimo: @emprestimo_atributos }, format: :json
       end
 
       it 'renders the json representation for the user record just created' do
         emprestimo_response = JSON.parse(response.body, symbolize_names: true)
         expect(emprestimo_response[:usuario_id]).to eq(@emprestimo_atributos[:usuario_id])
-        expect(emprestimo_response[:bibliotecario_id]).to eq(@emprestimo_atributos[:bibliotecario_id])
         expect(emprestimo_response[:livro_id]).to eq(@emprestimo_atributos[:livro_id])
       end
       it { should respond_with 201 }
@@ -60,18 +65,28 @@ RSpec.describe Api::V1::EmprestimosController, type: :controller do
 
     context 'when is not created' do
       before(:each) do
-        @invalid_emprestimo_atributos = { livro_id: '' }
+        bibliotecario = FactoryBot.create(:bibliotecario, primeiro_acesso: false)
+        request.headers['Authorization'] = bibliotecario.token
+
+        @usuario = FactoryBot.create(:usuario)
+
+        @invalid_emprestimo_atributos = {
+          livro_id: -1,
+          usuario_id: @usuario.id,
+          senha: @usuario.senha
+        }
         post :create, params: { emprestimo: @invalid_emprestimo_atributos }, format: :json
       end
 
       it 'renders an error json' do
         emprestimo_response = JSON.parse(response.body, symbolize_names: true)
         expect(emprestimo_response).to have_key(:errors)
+        expect(response).to have_http_status(404)
       end
 
       it 'renders the json errors on why the user could not be created' do
         emprestimo_response = JSON.parse(response.body, symbolize_names: true)
-        expect(emprestimo_response[:errors][:livro]).to include('must exist')
+        expect(emprestimo_response[:errors]).to include('Livro ou Usuário não encontrado')
       end
     end
   end

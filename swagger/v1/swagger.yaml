@@ -237,12 +237,17 @@ paths:
       summary: Create emprestimo
       tags:
       - Api::V1::Emprestimos
-      parameters: []
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token de autenticação do bibliotecário
+        schema:
+          type: string
       responses:
         '201':
           description: emprestimo created
-        '422':
-          description: create emprestimo error
+        '404':
+          description: not found
       requestBody:
         content:
           application/json:
@@ -256,18 +261,12 @@ paths:
                       type: integer
                     usuario_id:
                       type: integer
-                    bibliotecario_id:
-                      type: integer
-                    data_emprestimo:
+                    senha:
                       type: string
-                      format: date-time
-                    data_limite_devolucao:
-                      type: string
-                      format: date-time
-                    data_devolucao:
-                      type: string
-                      format: date-time
-                      nullable: true
+                  required:
+                  - livro_id
+                  - usuario_id
+                  - senha
     get:
       summary: Get emprestimos
       tags:

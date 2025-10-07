@@ -9,6 +9,9 @@ RSpec.describe 'api/v1/emprestimos', type: :request do
     post 'Create emprestimo' do
       tags 'Api::V1::Emprestimos'
       consumes 'application/json'
+
+      parameter name: 'Authorization', in: :header, type: :string, description: 'Token de autenticação do bibliotecário'
+
       parameter name: :emprestimo, in: :body, schema: {
         type: :object,
         properties: {
@@ -17,36 +20,48 @@ RSpec.describe 'api/v1/emprestimos', type: :request do
             properties: {
               livro_id: { type: :integer },
               usuario_id: { type: :integer },
-              bibliotecario_id: { type: :integer },
-              data_emprestimo: { type: :string, format: 'date-time' },
-              data_limite_devolucao: { type: :string, format: 'date-time' },
-              data_devolucao: { type: :string, format: 'date-time', nullable: true }
-            }
+              senha: { type: :string }
+            },
+            required: %w[livro_id usuario_id senha]
           }
         }
       }
 
       response '201', 'emprestimo created' do
-        let(:livro_existente) { FactoryBot.create(:livro) }
-        let(:usuario_existente) { FactoryBot.create(:usuario) }
-        let(:bibliotecario_existente) { FactoryBot.create(:bibliotecario) }
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let!(:livro_existente) { FactoryBot.create(:livro, status: :disponivel) }
+        let!(:usuario_existente) { FactoryBot.create(:usuario) }
+
+        let(:Authorization) { bibliotecario_logado.token }
+
         let(:emprestimo) do
           {
             emprestimo: {
               livro_id: livro_existente.id,
               usuario_id: usuario_existente.id,
-              bibliotecario_id: bibliotecario_existente.id,
-              data_emprestimo: Time.now, # ✅ ADICIONE ESTA LINHA
-              data_limite_devolucao: 7.days.from_now
+              senha: usuario_existente.senha
             }
           }
         end
+
         run_test!
       end
 
+      response '404', 'not found' do
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let!(:usuario_existente) { FactoryBot.create(:usuario) }
 
-      response '422', 'create emprestimo error' do
-        let(:emprestimo) { { emprestimo: { livro_id: '' } } }
+        let(:Authorization) { bibliotecario_logado.token }
+
+        let(:emprestimo) do
+          {
+            emprestimo: {
+              livro_id: -1,
+              usuario_id: usuario_existente.id,
+              senha: usuario_existente.senha
+            }
+          }
+        end
         run_test!
       end
     end

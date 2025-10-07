@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 20_251_006_201_031) do
+ActiveRecord::Schema[8.0].define(version: 20_251_007_004_239) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'pg_catalog.plpgsql'
 
@@ -66,6 +66,16 @@ ActiveRecord::Schema[8.0].define(version: 20_251_006_201_031) do
     t.index ['categoria_id'], name: 'index_livros_on_categoria_id'
   end
 
+  create_table 'multa', force: :cascade do |t|
+    t.bigint 'emprestimo_id', null: false
+    t.decimal 'valor', precision: 10, scale: 2, null: false
+    t.integer 'status', default: 0, null: false
+    t.datetime 'data_pagamento'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['emprestimo_id'], name: 'index_multa_on_emprestimo_id', unique: true
+  end
+
   create_table 'usuarios', force: :cascade do |t|
     t.string 'nome', null: false
     t.string 'cpf', null: false
@@ -82,4 +92,5 @@ ActiveRecord::Schema[8.0].define(version: 20_251_006_201_031) do
   add_foreign_key 'emprestimos', 'livros'
   add_foreign_key 'emprestimos', 'usuarios'
   add_foreign_key 'livros', 'categoria', column: 'categoria_id'
+  add_foreign_key 'multa', 'emprestimos'
 end

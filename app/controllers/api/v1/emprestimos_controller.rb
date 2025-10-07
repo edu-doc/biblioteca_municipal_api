@@ -3,10 +3,11 @@
 module Api
   module V1
     class EmprestimosController < ApplicationController
+      before_action :authenticate_with_token, only: [:create]
+
       def index
-        emprestimos = Emprestimo.all
-        render json: emprestimos,
-               only: %i[id livro_id usuario_id bibliotecario_id data_emprestimo data_limite_devolucao data_devolucao created_at updated_at], status: 200
+        @emprestimos = ::Emprestimo.all
+        render json: @emprestimos, status: 200
       end
 
       def show
@@ -16,11 +17,42 @@ module Api
       end
 
       def create
-        emprestimo = Emprestimo.new(emprestimo_params)
-        if emprestimo.save
-          render json: emprestimo, status: 201
-        else
-          render json: { errors: emprestimo.errors }, status: 422
+        begin
+          livro = ::Livro.find(params[:emprestimo][:livro_id])
+          usuario = ::Usuario.find(params[:emprestimo][:usuario_id])
+        rescue ActiveRecord::RecordNotFound
+          render json: { errors: 'Livro ou Usuário não encontrado' }, status: 404
+          return
+        end
+
+        unless livro.disponivel?
+          return render json: { errors: 'Livro não está disponível para empréstimo' }, status: :unprocessable_entity
+        end
+
+        unless usuario.senha == params[:emprestimo][:senha]
+          return render json: { errors: 'Senha de empréstimo inválida' }, status: :unauthorized
+        end
+
+        ::ActiveRecord::Base.transaction do
+          data_emprestimo = Time.current
+
+          data_limite = data_emprestimo + 15.days
+
+          @emprestimo = ::Emprestimo.new(
+            livro: livro,
+            usuario: usuario,
+            bibliotecario: current_bibliotecario,
+            data_emprestimo: data_emprestimo,
+            data_limite_devolucao: data_limite
+          )
+
+          if @emprestimo.save
+            livro.emprestado!
+            render json: @emprestimo, status: :created
+          else
+            render json: { errors: @emprestimo.errors }, status: :unprocessable_entity
+            raise ActiveRecord::Rollback
+          end
         end
       end
 
@@ -42,8 +74,7 @@ module Api
       private
 
       def emprestimo_params
-        params.require(:emprestimo).permit(:livro_id, :usuario_id, :bibliotecario_id, :data_emprestimo,
-                                           :data_limite_devolucao, :data_devolucao)
+        params.require(:emprestimo).permit(:livro_id, :usuario_id, :senha)
       end
     end
   end
