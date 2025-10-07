@@ -1,100 +1,77 @@
-![Logo of the project](https://github.com/edu-doc/biblioteca_municipal_api/blob/main/logo.jpg)
+# Biblioteca Municipal API
 
-# Biblioteca Municipal
+![Logo of the project](https://github.com/edu-doc/biblioteca_municipal_api/blob/main/logo.jpg)
 
 > API RESTful para o sistema de gerenciamento da Biblioteca Municipal Ney Pontes de Mossoró/RN.
 
-Este projeto é a solução para o Desafio Nº 0003/2025 da seleção de estágio para a Prefeitura de Mossoró. O objetivo é desenvolver um sistema para modernizar a gestão da Biblioteca Municipal Ney Pontes, substituindo os processos manuais de catalogação e empréstimo de livros.
+Este projeto resolve o Desafio Nº 0003/2025 da Prefeitura de Mossoró, modernizando a gestão da biblioteca através de uma API robusta desenvolvida em Ruby on Rails para ser consumida por um frontend em React.
 
-Nesse desafio, foi desenvolvida uma API em Ruby on Rails para controlar o acervo, os usuários e os empréstimos de livros. Essa API foi projetada para ser consumida por uma aplicação front-end em React com Tailwind CSS.
+---
 
-# Funcionalidades
+## Funcionalidades Implementadas
 
-## Funcionalidades Principais
+Todas as funcionalidades obrigatórias e as sugestões de bônus foram implementadas com foco em segurança, eficiência e experiência do usuário.
 
-* Autenticação de Bibliotecários:
+### 🔒 Autenticação e Segurança do Bibliotecário
+* **Autenticação JWT:** Uso de token de autenticação (JSON Web Token pattern) para todas as rotas restritas.
+* **Primeiro Acesso Forçado:** Implementação de uma senha provisória e obrigação de troca de senha no primeiro acesso, garantindo segurança desde o cadastro.
+* **Recuperação de Senha por API:** Fluxo de recuperação de senha customizado para APIs, utilizando Devise para o envio de e-mail com token.
 
-    * Cadastro de novos bibliotecários com nome, e-mail e senha criptografada.
+### 👤 Gestão de Usuários e Senha de Empréstimo
+* **Cadastro Completo:** Registro de usuários com nome, CPF, telefone e e-mail. O campo CPF é validado e único.
+* **Geração Automática de Senha:** Geração de uma senha de empréstimo aleatória e automática para cada novo usuário, enviada imediatamente por e-mail.
 
-    * Login seguro para acesso ao sistema.
+### 📚 Sistema de Empréstimos Avançado
+* **Cálculo de Prazo Otimizado:** A data limite de devolução é calculada em **15 dias úteis** a partir da data do empréstimo, excluindo finais de semana, conforme o requisito do desafio.
+* **Renovação Self-Service (Bônus):** O usuário pode renovar o empréstimo online (limite de 2 renovações) fornecendo apenas o ID do livro e sua senha de empréstimo (autoatendimento).
+* **Controle de Multas (Bônus):** Geração automática de multa de R$ 1,00 por dia de atraso no ato da devolução.
+* **Relatórios (Bônus):** Endpoint dedicado para listar todos os livros em atraso.
+* **Histórico (Bônus):** Endpoint para consultar o histórico completo de empréstimos de um usuário.
 
-    * Funcionalidade de recuperação de senha por e-mail.
+---
 
-    * Sistema de senha provisória para o primeiro acesso, garantindo maior segurança.
+## 🏗️ Arquitetura e Qualidade de Código
 
-* Gestão de Livros e Categorias:
+O projeto foi construído com foco em testes, seguindo os princípios de Desenvolvimento Orientado a Testes (TTD).
 
-    * CRUD completo para livros, com campos para título, autor, categoria e status (disponível/emprestado).
+### 🧪 Programação Orientada a Testes (POT) e RSpec
+A cobertura de código é garantida pelo **RSpec**, com testes abrangentes em três níveis:
+* **Testes de Unidade (Models):** Garantindo a lógica de negócio (ex: validação de CPF, geração de senha de empréstimo, cálculo de multas).
+* **Testes de Controlador (Controllers):** Verificando as respostas HTTP e o fluxo da API (ex: sucesso na criação de empréstimo, tratamento de erros de autenticação).
+* **Testes de Integração (Swagger/Rswag):** Garantindo que a documentação da API esteja sincronizada e funcional, cobrindo todos os endpoints de forma end-to-end.
 
-    * CRUD para as categorias dos livros.
+### 💻 Tecnologias de Qualidade e Segurança
+| Aspecto | Tecnologia/Gem | Detalhe |
+| :--- | :--- | :--- |
+| **Autenticação** | `devise` | Solução padrão da indústria para gerenciar bibliotecários (login, recuperação de senha).
+| **Documentação** | `rswag-api`, `rswag-ui` | Geração automática da documentação OpenAPI/Swagger a partir dos testes de integração, disponibilizando a API documentada em `/api-docs`.
+| **Análise Estática** | `rubocop`, `brakeman` | Uso de RuboCop para enforce de estilo de código (Lint) e Brakeman para análise de segurança, integrados ao fluxo de Integração Contínua (CI).
+| **Background Jobs** | `solid_queue` | Uso do sistema de filas nativo do Rails para processamento assíncrono (ex: envio de e-mails).
 
-* Gestão de Usuários da Biblioteca:
+---
 
-    * Cadastro de usuários com nome completo, CPF, telefone e e-mail.
+## 🛠️ Tecnologias Utilizadas
 
-    * Geração automática de uma "senha de empréstimo" para cada usuário, enviada por e-mail.
-
-* Sistema de Empréstimos:
-
-    * Fluxo completo para registrar o empréstimo de um livro, validando o status do livro e a senha do usuário.
-
-    * Registro da data de empréstimo e cálculo automático da data de devolução para 15 dias úteis.
-
-## Funcionalidades Extras (Bônus)
-
-* Relatório de livros em atraso.
-
-* Renovação online de empréstimos.
-
-* Histórico de empréstimos por usuário.
-
-* Cálculo de multas para devoluções em atraso.
-
-# Tecnologias Utilizadas
-
-* Backend (API): Ruby on Rails 
-
-* Frontend: React, Tailwind CSS
-
-* Banco de Dados: PostgreSQL
+* **Backend (API):** Ruby on Rails 8.0.2
+* **Autenticação:** Devise
+* **Testes:** RSpec, FactoryBot, Shoulda Matchers
+* **Banco de Dados:** PostgreSQL
 
 # Instalação e Execução
 
 Para executar este projeto localmente, siga os passos abaixo.
 
 ## Pré-requisitos
-
 * Ruby (~> 3.x)
-
 * Rails (~> 7.x)
-
-* Node.js (~> 18.x)
-
-* Yarn ou NPM
-
 * PostgreSQL
 
 ## Backend (API Rails)
-
-* Clone o repositório: git clone https://github.com/edu-doc/BibliotecaMunicipal.git
-
-* Instale as dependências (gems): bundle install
-
-* Configure o banco de dados e edite o arquivo .env com as credenciais do seu banco de dados PostgreSQL.
-
-* Crie, migre e popule o banco de dados: rails db:create db:migrate db:seed
-
-* Inicie o servidor Rails: rails server
-
-## Frontend (React)
-
-* Navegue até o diretório do frontend (Pasta raiz)
-
-* Instale as dependências: npm install ou yarn install
-
-* Inicie a aplicação React: npm start ou yarn start
-
-* A aplicação estará acessível em http://localhost:3001 (ou outra porta disponível).
+* Clone o repositório: `git clone https://github.com/edu-doc/biblioteca_municipal_api.git`
+* Instale as dependências (gems): `bundle install`
+* Configure o banco de dados e edite o arquivo `.env` com as credenciais do seu banco de dados PostgreSQL.
+* Crie e migre: `rails db:create db:migrate`
+* Inicie o servidor Rails: `rails server`
 
 # Diagrama do Banco de Dados
 
@@ -107,9 +84,6 @@ erDiagram
         varchar senha
         varchar senha_provisoria
         boolean primario_acesso
-    }
-    resetar_senhas {
-        varchar email PK
         varchar token
     }
     usuarios {
@@ -155,16 +129,3 @@ erDiagram
     usuarios ||--o{ emprestimos : "realiza"
     bibliotecarios ||--o{ emprestimos : "registra"
     emprestimos ||--|| multas : "gera"
-    bibliotecarios }o..o| resetar_senhas : "solicita"
-
-```
-
-# Contribuindo
-
-Se você gostaria de contribuir, por favor, faça um fork do repositório e use um feature branch. Pull Requests são muito bem-vindos! Para grandes mudanças, por favor, abra uma issue primeiro para discutir o que você gostaria de mudar.
-
-# Links
-
-* Repositório: https://github.com/edu-doc/BibliotecaMunicipal
-
-* Reportar um problema: https://github.com/edu-doc/BibliotecaMunicipal/issues
