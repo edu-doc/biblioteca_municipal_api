@@ -20,7 +20,6 @@ jobs:
           bundler-cache: true
 
       - name: Fix Shebangs for Linux
-        # Altera '#!/usr/bin/env ruby.exe' para '#!/usr/bin/env ruby'
         run: |
           chmod +x bin/*
           sed -i 's/ruby\.exe$/ruby/' bin/*
@@ -42,9 +41,8 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-
+          
       - name: Fix Shebangs for Linux
-        # Altera '#!/usr/bin/env ruby.exe' para '#!/usr/bin/env ruby'
         run: |
           chmod +x bin/*
           sed -i 's/ruby\.exe$/ruby/' bin/*
