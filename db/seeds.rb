@@ -9,3 +9,15 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+# NOVO: Cria o primeiro bibliotecário ADMIN, se ele não existir
+if Bibliotecario.find_by(email: 'admin@biblioteca.com').nil?
+  Bibliotecario.create!(
+    email: 'admin@biblioteca.com',
+    nome: 'Admin Master',
+    senha_provisoria: 'senha123', 
+    primeiro_acesso: true,
+    role: :admin
+  )
+  puts 'Admin criado: admin@biblioteca.com com senha provisória: senha123'
+end

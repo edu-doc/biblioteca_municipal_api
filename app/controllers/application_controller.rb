@@ -5,7 +5,19 @@ class ApplicationController < ActionController::API
 
   before_action :forcar_troca_de_senha
 
+  rescue_from SecurityError, with: :deny_access_admin
+
   private
+
+  def authorize_admin!
+    unless user_signed_in? && current_bibliotecario.admin?
+      raise SecurityError, 'Acesso negado. Apenas administradores podem realizar esta ação.'
+    end
+  end
+
+  def deny_access_admin
+    render json: { errors: 'Acesso negado. Apenas administradores podem realizar esta ação.' }, status: :forbidden
+  end
 
   def forcar_troca_de_senha
     return unless user_signed_in? && current_bibliotecario.primeiro_acesso?

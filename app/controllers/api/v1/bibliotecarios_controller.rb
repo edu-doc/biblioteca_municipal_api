@@ -3,6 +3,12 @@
 module Api
   module V1
     class BibliotecariosController < ApplicationController
+      
+      before_action :authenticate_with_token, only: %i[create update destroy]
+      before_action :authorize_admin!, only: %i[create destroy] 
+      
+      before_action :authorize_bibliotecario_update, only: [:update]
+
       respond_to :json
 
       def show
@@ -30,7 +36,11 @@ module Api
         end
 
         if bibliotecario.update(params_to_use)
-          render json: bibliotecario, status: :ok, location: [:api, :v1, bibliotecario]
+          bibliotecario.reload
+          render json: bibliotecario, 
+                 only: %i[id nome email senha_provisoria created_at updated_at],
+                 status: :ok, 
+                 location: [:api, :v1, bibliotecario]
         else
           render json: { errors: bibliotecario.errors }, status: 422
         end
@@ -43,7 +53,16 @@ module Api
       end
 
       private
-
+      
+      def authorize_bibliotecario_update
+        
+        target_id = params[:id].to_i
+        
+        unless current_bibliotecario.admin? || current_bibliotecario.id == target_id
+          raise SecurityError, 'Acesso negado. Você só pode atualizar o seu próprio perfil, a menos que seja um administrador.'
+        end
+      end
+      
       def bibliotecario_params
         params.require(:bibliotecario).permit(:email, :nome, :senha_provisoria)
       end

@@ -9,12 +9,21 @@ paths:
       summary: Create bibliotecario
       tags:
       - Api::V1::Bibliotecarios
-      parameters: []
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token de autenticação do administrador
+        schema:
+          type: string
       responses:
         '201':
           description: bibliotecario created
         '422':
           description: create bibliotecario error
+        '401':
+          description: unauthenticated
+        '403':
+          description: forbidden (not admin)
       requestBody:
         content:
           application/json:
@@ -31,6 +40,13 @@ paths:
                     nome:
                       type: string
   "/api/v1/bibliotecarios/{id}":
+    parameters:
+    - name: Authorization
+      in: header
+      description: Token de autenticação
+      required: false
+      schema:
+        type: string
     get:
       summary: Get bibliotecario
       tags:
@@ -45,25 +61,6 @@ paths:
       responses:
         '200':
           description: bibliotecario found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  nome:
-                    type: string
-                  email:
-                    type: string
-                  senha_provisoria:
-                    type: string
-                  created_at:
-                    type: string
-                    format: date-time
-                  updated_at:
-                    type: string
-                    format: date-time
         '404':
           description: bibliotecario not found
     delete:
@@ -75,6 +72,11 @@ paths:
         in: path
         description: id for bibliotecario
         required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Token de autenticação do administrador
         schema:
           type: string
       responses:
@@ -93,13 +95,20 @@ paths:
         required: true
         schema:
           type: string
+      - name: Authorization
+        in: header
+        description: Token de autenticação
+        schema:
+          type: string
       responses:
         '200':
-          description: bibliotecario updated
+          description: self-update
         '404':
           description: bibliotecario not found
         '422':
           description: update bibliotecario error
+        '403':
+          description: forbidden (not admin)
       requestBody:
         content:
           application/json:

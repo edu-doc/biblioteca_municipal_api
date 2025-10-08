@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 class Bibliotecario < ApplicationRecord
+
+  enum :role, { default: 0, admin: 1 }
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
   validates :email, presence: true, uniqueness: true
   validates :token, uniqueness: true
+
+  validates :nome, presence: true
 
   validates :senha_provisoria, presence: true, on: :create
 
