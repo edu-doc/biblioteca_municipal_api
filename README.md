@@ -70,7 +70,7 @@ Para executar este projeto localmente, siga os passos abaixo.
 * Clone o repositório: `git clone https://github.com/edu-doc/biblioteca_municipal_api.git`
 * Instale as dependências (gems): `bundle install`
 * Configure o banco de dados e edite o arquivo `.env` com as credenciais do seu banco de dados PostgreSQL.
-* Crie e migre: `rails db:create db:migrate`
+* Cri, migre e gere o bibliotecario admin: `rails db:create db:migrate db:seed`
 * Inicie o servidor Rails: `rails server`
 
 # Diagrama do Banco de Dados
@@ -85,6 +85,7 @@ erDiagram
         varchar senha_provisoria
         boolean primario_acesso
         varchar token
+        int role
     }
     usuarios {
         int id PK
