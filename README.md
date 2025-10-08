@@ -34,7 +34,7 @@ Todas as funcionalidades obrigatórias e as sugestões de bônus foram implement
 
 O projeto foi construído com foco em testes, seguindo os princípios de Desenvolvimento Orientado a Testes (TTD).
 
-### 🧪 Programação Orientada a Testes (POT) e RSpec
+### 🧪 Desenvolvimento Orientado a Testes (TDD) e RSpec
 A cobertura de código é garantida pelo **RSpec**, com testes abrangentes em três níveis:
 * **Testes de Unidade (Models):** Garantindo a lógica de negócio (ex: validação de CPF, geração de senha de empréstimo, cálculo de multas).
 * **Testes de Controlador (Controllers):** Verificando as respostas HTTP e o fluxo da API (ex: sucesso na criação de empréstimo, tratamento de erros de autenticação).
