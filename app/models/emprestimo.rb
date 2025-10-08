@@ -16,13 +16,15 @@ class Emprestimo < ApplicationRecord
   end
 
   def registrar_devolucao!
+    hora_da_devolucao = Time.current
+
     self.class.transaction do
-      update!(data_devolucao: Time.current)
+      update!(data_devolucao: hora_da_devolucao)
       livro.disponivel!
 
-      if data_devolucao > data_limite_devolucao
+      if hora_da_devolucao > data_limite_devolucao
 
-        dias_atraso = (data_devolucao.to_date - data_limite_devolucao.to_date).to_i
+        dias_atraso = (hora_da_devolucao.to_date - data_limite_devolucao.to_date).to_i
         valor_multa = dias_atraso * 1.00
 
         ::Multum.create!(emprestimo: self, valor: valor_multa)

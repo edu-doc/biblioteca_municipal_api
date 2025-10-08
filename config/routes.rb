@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :bibliotecarios, controllers: { passwords: 'bibliotecarios/passwords' }
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -15,15 +14,19 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      devise_for :bibliotecarios, controllers: { passwords: 'bibliotecarios/passwords' }, skip: [:sessions, :registrations]
       resources :bibliotecarios, only: %i[show create update destroy]
       resource :sessions, only: %i[create destroy]
       resources :categorias, only: %i[index show create update destroy]
       resources :livros, only: %i[index show create update destroy]
-      resources :usuarios, only: %i[show create update destroy] do
-        member do
-          get :emprestimos
-        end
+      resources :usuarios, only: %i[index show create update destroy] do
+      collection do
+        get 'find_by_cpf/:cpf', to: 'usuarios#find_by_cpf', constraints: { cpf: /[0-9\.\-]+/ }
       end
+      member do
+        get :emprestimos
+      end
+    end
       resources :emprestimos, only: %i[index show create update destroy] do
         collection do
           get :atrasados

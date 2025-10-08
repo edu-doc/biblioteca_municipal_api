@@ -6,8 +6,8 @@ module Api
       before_action :authenticate_with_token
 
       def index
-        @multas = ::Multum.all
-        render json: @multas, status: :ok
+        @multas = ::Multum.includes(emprestimo: [:usuario, :livro]).order(created_at: :desc)
+        render json: @multas, include: { emprestimo: { include: [:usuario, :livro] } }, status: :ok
       end
 
       def show

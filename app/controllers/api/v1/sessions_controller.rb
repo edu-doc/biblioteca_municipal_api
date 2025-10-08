@@ -43,7 +43,9 @@ module Api
 
         render json: {
           token: bibliotecario.token,
-          primeiro_acesso: bibliotecario.primeiro_acesso?
+          primeiro_acesso: bibliotecario.primeiro_acesso?,
+          user_id: bibliotecario.id,
+          role: bibliotecario.role
         }, status: :ok
       end
     end

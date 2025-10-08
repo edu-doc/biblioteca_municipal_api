@@ -6,8 +6,8 @@ module Api
       before_action :authenticate_with_token, only: %i[create update]
 
       def index
-        @emprestimos = ::Emprestimo.all
-        render json: @emprestimos, status: 200
+        @emprestimos = ::Emprestimo.includes(:livro, :usuario).where(data_devolucao: nil).order(data_limite_devolucao: :asc)
+        render json: @emprestimos, include: [:livro, :usuario], status: 200
       end
 
       def show
@@ -101,9 +101,11 @@ module Api
 
       # GET /api/v1/emprestimos/atrasados
       def atrasados
-        emprestimos_atrasados = ::Emprestimo.where('data_limite_devolucao < ? AND data_devolucao IS NULL', Time.current)
+        emprestimos_atrasados = ::Emprestimo.includes(:livro, :usuario)
+                                            .where('data_limite_devolucao < ? AND data_devolucao IS NULL', Time.current)
+                                            .order(data_limite_devolucao: :asc)
 
-        render json: emprestimos_atrasados, status: 200
+        render json: emprestimos_atrasados, include: [:livro, :usuario], status: 200
       end
 
       private

@@ -1,33 +1,37 @@
 # frozen_string_literal: true
 
 module Bibliotecarios
-  module Bibliotecarios
-    class PasswordsController < Devise::PasswordsController
-      skip_before_action :authenticate_with_token, only: %i[create update]
-      respond_to :json
+  class PasswordsController < ApplicationController
+    skip_before_action :authenticate_with_token, only: %i[create update], raise: false
+    skip_before_action :forcar_troca_de_senha, only: %i[create update], raise: false
 
-      def create
-        self.resource = resource_class.send_reset_password_instructions(resource_params)
-        yield resource if block_given?
-
-        if successfully_sent?(resource)
-          render json: { message: 'Instruções de recuperação enviadas para o seu e-mail.' }, status: :ok
-        else
-          render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
-        end
+    # POST /api/v1/bibliotecarios/password
+    def create
+      bibliotecario = Bibliotecario.find_by(email: params.dig(:bibliotecario, :email))
+      if bibliotecario
+        bibliotecario.send_reset_password_instructions
+        render json: { message: 'Instruções de recuperação enviadas para o seu e-mail.' }, status: :ok
+      else
+        render json: { errors: ['Email não encontrado ou inválido.'] }, status: :not_found
       end
+    end
 
-      def update
-        self.resource = resource_class.reset_password_by_token(resource_params)
-        yield resource if block_given?
+    # PUT /api/v1/bibliotecarios/password
+    def update
+      resource = Bibliotecario.reset_password_by_token(update_params)
 
-        if resource.errors.empty?
-          resource.unlock_access! if unlockable?(resource)
-          render json: { message: 'Sua senha foi alterada com sucesso.' }, status: :ok
-        else
-          render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
-        end
+      if resource.errors.empty?
+        render json: { message: 'Sua senha foi alterada com sucesso.' }, status: :ok
+      else
+        render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
       end
+    end
+
+    private
+
+    # Parâmetros permitidos para o update
+    def update_params
+      params.require(:bibliotecario).permit(:password, :password_confirmation, :reset_password_token)
     end
   end
 end

@@ -9,6 +9,7 @@ RSpec.describe 'api/v1/usuarios', type: :request do
     post 'Create usuario' do
       tags 'Api::V1::Usuarios'
       consumes 'application/json'
+      parameter name: :Authorization, in: :header, type: :string, description: 'Token de autenticação do bibliotecário'
       parameter name: :usuario, in: :body, schema: {
         type: :object,
         properties: {
@@ -25,12 +26,16 @@ RSpec.describe 'api/v1/usuarios', type: :request do
       }
 
       response '201', 'usuario created' do
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let(:Authorization) { bibliotecario_logado.token }
         let(:usuario) { { usuario: FactoryBot.attributes_for(:usuario) } }
         run_test!
       end
 
 
       response '422', 'create usuario error' do
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let(:Authorization) { bibliotecario_logado.token }
         let(:usuario) do
           { usuario: { nome: 'Usuario Teste', cpf: '111.222.33-44', telefone: '55 21-99999-9999',
                        email: 'testegmail.com' } }
@@ -76,14 +81,19 @@ RSpec.describe 'api/v1/usuarios', type: :request do
     delete 'Delete usuario' do
       tags 'Api::V1::Usuarios'
       produces 'application/json'
+      parameter name: 'Authorization', in: :header, type: :string, description: 'Token de autenticação do bibliotecário'
       parameter name: :id, in: :path, type: :string, description: 'id for usuario', required: true
 
       response '204', 'usuario deleted' do
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let(:Authorization) { bibliotecario_logado.token }
         let(:id) { FactoryBot.create(:usuario).id }
         run_test!
       end
 
       response '404', 'usuario not found' do
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let(:Authorization) { bibliotecario_logado.token }
         let(:id) { -1 }
         run_test!
       end
@@ -94,6 +104,7 @@ RSpec.describe 'api/v1/usuarios', type: :request do
     put 'Update usuario' do
       tags 'Api::V1::Usuarios'
       consumes 'application/json'
+      parameter name: 'Authorization', in: :header, type: :string, description: 'Token de autenticação do bibliotecário'
       parameter name: :id, in: :path, type: :string, description: 'id for usuario', required: true
       parameter name: :usuario, in: :body, schema: {
         type: :object,
@@ -111,6 +122,8 @@ RSpec.describe 'api/v1/usuarios', type: :request do
       }
 
       response '200', 'usuario updated' do
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let(:Authorization) { bibliotecario_logado.token }
         let(:id) { FactoryBot.create(:usuario).id }
         let(:usuario) do
           { usuario: { nome: 'Usuario Novo', cpf: '910.086.390-44', telefone: '55 21-00000-0000',
@@ -120,6 +133,8 @@ RSpec.describe 'api/v1/usuarios', type: :request do
       end
 
       response '404', 'usuario not found' do
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let(:Authorization) { bibliotecario_logado.token }
         let(:id) { -1 }
         let(:usuario) do
           { usuario: { nome: 'Usuario Novo', cpf: '910.086.390-44', telefone: '55 21-00000-0000',
@@ -129,6 +144,8 @@ RSpec.describe 'api/v1/usuarios', type: :request do
       end
 
       response '422', 'update usuario error' do
+        let!(:bibliotecario_logado) { FactoryBot.create(:bibliotecario, primeiro_acesso: false) }
+        let(:Authorization) { bibliotecario_logado.token }
         let(:id) { FactoryBot.create(:usuario).id }
         let(:usuario) do
           { usuario: { nome: '', cpf: '111.222.333-44', telefone: '', email: 'novotestegmail.com' } }

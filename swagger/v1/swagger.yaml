@@ -700,7 +700,12 @@ paths:
       summary: Create usuario
       tags:
       - Api::V1::Usuarios
-      parameters: []
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token de autenticação do bibliotecário
+        schema:
+          type: string
       responses:
         '201':
           description: usuario created
@@ -766,6 +771,11 @@ paths:
       tags:
       - Api::V1::Usuarios
       parameters:
+      - name: Authorization
+        in: header
+        description: Token de autenticação do bibliotecário
+        schema:
+          type: string
       - name: id
         in: path
         description: id for usuario
@@ -782,6 +792,11 @@ paths:
       tags:
       - Api::V1::Usuarios
       parameters:
+      - name: Authorization
+        in: header
+        description: Token de autenticação do bibliotecário
+        schema:
+          type: string
       - name: id
         in: path
         description: id for usuario

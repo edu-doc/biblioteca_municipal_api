@@ -3,9 +3,27 @@
 module Api
   module V1
     class UsuariosController < ApplicationController
+
+      before_action :authenticate_with_token, only: %i[create update destroy find_by_cpf]
+
+      def index
+        usuarios = Usuario.all.order(created_at: :desc)
+        render json: usuarios, only: %i[id nome cpf telefone email], status: 200
+      end
+
       def show
         usuario = Usuario.find(params[:id])
         render json: usuario, only: %i[nome cpf telefone email senha created_at updated_at], status: 200
+      end
+
+      def find_by_cpf
+        cpf = params[:cpf]
+        usuario = Usuario.find_by(cpf: cpf)
+        if usuario
+          render json: usuario, only: %i[id nome email cpf], status: :ok
+        else
+          render json: { errors: 'Utilizador não encontrado com o CPF fornecido.' }, status: :not_found
+        end
       end
 
       def create
