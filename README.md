@@ -23,7 +23,7 @@ Todas as funcionalidades obrigatórias e as sugestões de bônus foram implement
 
 ### 📚 Sistema de Empréstimos Avançado
 * **Cálculo de Prazo Otimizado:** A data limite de devolução é calculada em **15 dias úteis** a partir da data do empréstimo, excluindo finais de semana, conforme o requisito do desafio.
-* **Renovação Self-Service (Bônus):** O usuário pode renovar o empréstimo online (limite de 2 renovações) fornecendo apenas o ID do livro e sua senha de empréstimo (autoatendimento).
+* **Renovação Self-Service (Bônus):** O usuário pode renovar o empréstimo online (limite de 2 renovações) fornecendo apenas o CPF e sua senha de empréstimo (autoatendimento).
 * **Controle de Multas (Bônus):** Geração automática de multa de R$ 1,00 por dia de atraso no ato da devolução.
 * **Relatórios (Bônus):** Endpoint dedicado para listar todos os livros em atraso.
 * **Histórico (Bônus):** Endpoint para consultar o histórico completo de empréstimos de um usuário.
