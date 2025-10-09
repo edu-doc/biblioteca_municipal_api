@@ -22,15 +22,18 @@ Rails.application.routes.draw do
       resources :usuarios, only: %i[index show create update destroy] do
       collection do
         get 'find_by_cpf/:cpf', to: 'usuarios#find_by_cpf', constraints: { cpf: /[0-9\.\-]+/ }
+        post 'emprestimos_ativos', to: 'usuarios#emprestimos_ativos'
       end
       member do
         get :emprestimos
       end
     end
       resources :emprestimos, only: %i[index show create update destroy] do
+        member do
+          put :renovar
+        end
         collection do
           get :atrasados
-          post :renovar
         end
       end
       resources :multas, only: %i[index show update]

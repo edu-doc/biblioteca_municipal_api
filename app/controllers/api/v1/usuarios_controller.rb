@@ -26,6 +26,17 @@ module Api
         end
       end
 
+      def emprestimos_ativos
+        usuario = Usuario.find_by(cpf: params[:cpf])
+
+        unless usuario && usuario.senha == params[:senha]
+          return render json: { errors: 'CPF ou Senha de Empréstimo inválidos.' }, status: :unauthorized
+        end
+
+        emprestimos = usuario.emprestimos.includes(:livro).where(data_devolucao: nil).order(data_limite_devolucao: :asc)
+        render json: emprestimos, include: :livro, status: :ok
+      end
+
       def create
         usuario = Usuario.new(usuario_params)
         if usuario.save

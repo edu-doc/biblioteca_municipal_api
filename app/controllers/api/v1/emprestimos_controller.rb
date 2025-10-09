@@ -67,30 +67,15 @@ module Api
         end
       end
 
-      # POST /api/v1/emprestimos/renovar
+      # PUT /api/v1/emprestimos/:id/renovar
       def renovar
-        livro_id = params[:emprestimo][:livro_id]
-        senha = params[:emprestimo][:senha]
-
-        emprestimo = ::Emprestimo.find_by(livro_id: livro_id, data_devolucao: nil)
-
-        unless emprestimo
-          return render json: { errors: 'Empréstimo ativo para este livro não encontrado.' }, status: 404
-        end
-
-        usuario = emprestimo.usuario
-
-        return render json: { errors: 'Senha de empréstimo inválida.' }, status: 401 unless usuario.senha == senha
+        emprestimo = Emprestimo.find(params[:id])
 
         if emprestimo.renovar!
           render json: emprestimo, status: :ok
         else
-          render json: { errors: emprestimo.errors.full_messages }, status: 422
+          render json: { errors: emprestimo.errors.full_messages }, status: :unprocessable_entity
         end
-      rescue ActiveRecord::RecordNotFound
-        render json: { errors: 'Livro não encontrado.' }, status: 404
-      rescue ActionController::ParameterMissing
-        render json: { errors: 'Parâmetros livro_id e senha são obrigatórios.' }, status: 400
       end
 
       def destroy
