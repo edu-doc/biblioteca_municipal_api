@@ -59,7 +59,7 @@ group :development, :test do
 
   gem 'pry-rails', '~> 0.3.11'
 
-  gem 'shoulda-matchers', '~> 6.5'
+  gem 'shoulda-matchers', '~> 7.0'
 
   gem 'cpf_cnpj', '~> 1.0', '>= 1.0.1'
 
