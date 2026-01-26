@@ -17,7 +17,7 @@ gem 'puma', '>= 5.0'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
-gem 'devise', '~> 4.9', '>= 4.9.4'
+gem 'devise', '~> 5.0'
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem 'solid_cable'
